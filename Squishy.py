@@ -1,3 +1,5 @@
+# EL ARREDONDO NO HIZO NADA!!
+
 try:
 	from Tkinter import *
 except:

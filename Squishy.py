@@ -1,4 +1,5 @@
 # EL ARREDONDO NO HIZO NADA!!
+# SI HICE ALGO!!! @RREDONDIN
 
 try:
 	from Tkinter import *

@@ -218,7 +218,6 @@ class Squishy:
 			conectados = i.getConexion()
 			nod1 = self.__grafo.getNodo(conectados[0])
 			nod2 = self.__grafo.getNodo(conectados[1])
-			print "CONECTADOS SOSPECHOSOS",conectados[1]
 			pos1 = nod1.getPosicion()
 			pos2 = nod2.getPosicion()
 			lienzo.create_line(pos1[0],pos1[1],pos2[0],pos2[1],arrow=LAST)

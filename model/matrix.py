@@ -4,6 +4,8 @@ class Matrix:
 	def __init__(self, dim):
 		self.__dimMatrix = dim
 		self.__matrix = self.__set_matrix(dim)
+		self.__stackUndo=[]
+		self.__stackRedo[]
 
 	#
 	#  PRIVATE METHODS
@@ -23,7 +25,24 @@ class Matrix:
 	#
 	#  PUBLIC METHODS
 	#
+	def unDo(self)
+		"""unDo agrega la matriz actual en una pila "redo" (rehacer) y luego
+		define una nueva matriz actual, que es la última guardada en la pila de deshacer"""
+		"""Cada vez que deshagas, lo que deshagas será guardado en una pila de "rehacer" """
+		self.__stackRedo.append(self.__matrix)
+		self.__matrix=self.__stackUndo.pop()
 
+	def reDo(self)
+		"""reDo agrega la matriz actual en una pila "undo" (deshacer) y luego
+		define una nueva matriz actual, que es la última guardada en la pila rehacer"""
+		"""Cada vez que rehagas, lo que rehagas será guardado en una pila de "deshacer" """
+		self.__stackUndo.append(self.__matriz)
+		self.__matrix=self.__stackRedo.pop()
+
+	def push_stack(self,matrix):
+		"""Empila una matriz en una lista de deshacer"""
+		self.__stackUndo.append(matrix)
+	
 	def get_dim(self):
 		"""Retorna una copia 'superficial' (por valor) de la dimension"""
 		dim = copy.copy(self.__dimMatrix)
@@ -36,7 +55,9 @@ class Matrix:
 
 	def add_node(self):
 		"""Agrega los datos de un nodo (nueva fila y columna)
-		Retorna la nueva dimension de la matriz"""
+		Retorna la nueva dimension de la matriz
+		y empila la matriz en unDo antes de ser modificada"""
+		push_stack(self.__matrix)
 		new = []
 		dim = self.__dimMatrix
 		for i in range(dim):
@@ -50,7 +71,9 @@ class Matrix:
 	def del_node(self, target):
 		"""Para un indice "target":
 		Elimina los datos de un nodo (fila & columna respectiva)
-		Retorna la nueva dimension de la matriz"""
+		Retorna la nueva dimension de la matriz
+		y empila la matriz en unDo antes de ser modificada"""
+		push_stack(self.__matrix)
 		dim = self.__dimMatrix
 		self.__matrix.pop(target)
 		for i in self.__matrix:
@@ -71,5 +94,7 @@ class Matrix:
 		return True
 
 	def set_entry(row, col, value):
-		"""Inserta un valor en el elemento (row, col) de la matriz"""
+		"""Inserta un valor en el elemento (row, col) de la matriz
+		y empila la matriz en unDo antes de ser modificada"""
+		push_stack(self.__matrix)
 		self.__matrix[row][col] = value

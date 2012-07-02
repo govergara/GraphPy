@@ -30,7 +30,6 @@ class Graph:
 		if nodo>dim:
 			return false
 		for i in dim:
-			for j in dim:
-				if self.__matrix[i][node] ==1:
-					c+=1
+			if self.__matrix[i][node] ==1:
+				c+=1
 		return c

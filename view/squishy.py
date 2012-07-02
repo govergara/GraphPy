@@ -5,29 +5,29 @@ except:
 	print "PARA EJECUTAR GRAPHPY NECESITAS TK INSTALADO EN TU SO"
 
 
-class Nodo:
+class Node:
 
-	def __init__(self, id=-1, posicion=None, etiqueta=None):
+	def __init__(self, id=-1, position=None, label=None):
 		self.__id = id
-		self.__etiqueta = etiqueta
-		self.__posicion = posicion
-	
-	def setEtiqueta(self, nuevaEtiqueta):
+		self.__label = label
+		self.__position = position
+			
+	def setLabel(self, newLabel):
 		try:
-			self.__etiqueta = nuevaEtiqueta
+			self.__label = newLabel
 			return True
 		except:
 			return False
 	
-	def getEtiqueta(self):
+	def getLabel(self):
 		try:
-			return self.__etiqueta
+			return self.__label
 		except:
 			return None
 	
-	def setId(self, nuevoId):
+	def setId(self, newId):
 		try:
-			self.__id = nuevoId
+			self.__id = newId
 			return True
 		except:
 			return False
@@ -38,115 +38,117 @@ class Nodo:
 		except:
 			return None
 	
-	def setPosicion(self, nuevaPosicion):
+	def setPosition(self, newPosition):
 		try:
-			self.__posicion = nuevaPosicion
+			self.__position = newPosition
 			return True
 		except:
 			return False
-	def getPosicion(self):
+
+	def getPosition(self):
 		try:
-			return self.__posicion
+			return self.__position
 		except:
 			return None
+
 	def __str__(self):
 		return "NODO ID: {0:d}\n".format(self.__id)
 
 
-class Arista:
+class Edge:
 	
-	def __init__(self, peso, conexion):
-		self.__peso = peso
-		self.__conexion = conexion
+	def __init__(self, weight, connection):
+		self.__weight = weight
+		self.__connection = connection
 	
-	def setConexion(self, nuevaConexion):
+	def setConnection(self, newConnection):
 		try:
-			self.__conexion = nuevaConexion
+			self.__connection = newConnection
 			return True
 		except:
 			return False
 	
-	def getConexion(self):
+	def getConnection(self):
 		try:
-			return self.__conexion
+			return self.__connection
 		except:
 			return None
 	
-	def setPeso(self, nuevoPeso):
+	def setWeight(self, newWeight):
 		try:
-			self.__peso = nuevoPeso
+			self.__weight = newWeight
 			return True
 		except:
 			return False
 	
-	def getPeso(self):
+	def getWeight(self):
 		try:
-			return self.__peso
+			return self.__weight
 		except:
 			return None
 	
 	def __str__(self):
 		return  "ARISTA CONEXION : ({0:d},{1:d})\n ".format(self.__conexion[0],self.__conexion[1])
 
-class Grafo:
+class Graph:
 
 	def __init__(self):
-		self.__nodos = []
-		self.__aristas = []
+		self.__nodes = []
+		self.__edges = []
 	
-	def nuevoNodo(self, id, et, pos):
+	def nuevoNode(self, id, et, pos):
 		try:
-			tmp = Nodo(id,pos,et)
-			self.__nodos.append(tmp)
+			tmp = Node(id,pos,et)
+			self.__nodes.append(tmp)
 			return True
 		except:
 			return False
 	
-	def nuevaArista(self, peso,conexion):
+	def nuevaEdge(self, weight,connection):
 		try:
-			tmpArista = Arista(peso,conexion)
-			self.__aristas.append(tmpArista)
+			tmpEdge = Edge(weight,connection)
+			self.__edges.append(tmpEdge)
 			return True
 		except:
 			return False
 	
-	def obtieneNodos(self):
-		return self.__nodos
+	def getNodes(self):
+		return self.__nodes
 	
-	def obtieneAristas(self):
-		return self.__aristas
+	def getEdges(self):
+		return self.__edges
 	
-	def eliminaNodo(self, idTarget):
+	def delNode(self, idTarget):
 		try:
-			self.__nodos.remove(idTarget)
+			self.__nodes.remove(idTarget)
 			return True
 		except:
 			return False
 
-	def elimiaArista(self, arisTarget):
+	def delEdge(self, edgeTarget):
 		try:
-			self.__aristas.remove(arisTarget)
+			self.__aristas.remove(edgeTarget)
 			return True
 		except:
 			return False
 	
-	def getNodo(self, idTarget):
+	def getNode(self, idTarget):
 		try:
-			for i in self.__nodos:
+			for i in self.__nodes:
 				if idTarget == i.getId():
 					return i
 		except:
 			return None
 	
-	def actualizaVertices(self,antiguo, nuevoId):
-		for i in self.__aristas:
-			conexion = i.getConexion()
-			if conexion[0] == antiguo:
-				nuevo = (nuevoId,conexion[1])
-				i.setConexion(nuevo)
-			elif conexion[1] == antiguo:
-				nuevo = (conexion[0],nuevoId)
-				i.setConexion(nuevo)
+	def updateEdges(self,old, newId):
+		for i in self.__edges:
+			connection = i.getConnection()
+			if connection[0] == old:
+				new = (newId,connection[1])
+				i.setConnection(new)
+			elif connection[1] == old:
+				new = (connection[0],newId)
+				i.setConnection(nuevo)
 		
 
 class Squishy:
@@ -155,64 +157,64 @@ class Squishy:
 		# estado 1 -> mover nodos
 		# estado 2 -> agrega nodos
 		# estado 3 -> agrea arista
-		self.__grafo = Grafo()
+		self.__graph = Graph()
 		tmp = Tk()
-		self.__areaDibujo = Canvas(tmp,width=500, height=500)
-		self.__areaDibujo.pack()
-		self.__areaDibujo.bind("<B1-Motion>",self.__onMotion)
-		self.__areaDibujo.bind("<Button-3>",self.__onBackClick)
-		self.__areaDibujo.bind("<Double-Button-1>", self.__onDoubleClick)
-		self.__estado = 1
+		self.__drawArea = Canvas(tmp,width=500, height=500)
+		self.__drawArea.pack()
+		self.__drawArea.bind("<B1-Motion>",self.__onMotion)
+		self.__drawArea.bind("<Button-3>",self.__onBackClick)
+		self.__drawArea.bind("<Double-Button-1>", self.__onDoubleClick)
+		self.__status = 1
 		self.__widgets = []
 		self.__tmpId =  None
 
-	def lanzarSquishy(self):
+	def throwSquishy(self):
 		try:
 			mainloop()
 		except:
 			return False
 	
-	def obtieneGrafo(self):
+	def getGraph(self):
 		try:
-			return self.__grafo
+			return self.__graph
 		except:
 			return None
 	
-	def obtieneImagen(self, strRuta):
+	def getPicture(self, strRuta):
 		pass
 	
-	def setEstado(self, nuevoEstado):
+	def setStatus(self, newStatus):
 		try:
-			self.__estado = nuevoEstado
+			self.__status = newStatus
 			return True
 		except:
 			return False
 	
-	def getEstado(self):
-		return self.__estado
+	def getStatus(self):
+		return self.__status
 	
-	def setGrafo( self, nuevoGrafo):
+	def setGraph( self, newGraph):
 		try:
-			self.__grafo = nuevoGrafo
+			self.__graph = newGraph
 			return True
 		except:
 			return False
 	
-	def __dibujar(self):
-		lienzo = self.__areaDibujo
-		nodos = self.__grafo.obtieneNodos()
-		aristas = self.__grafo.obtieneAristas()
-		lienzo.delete(ALL)
-		for i in nodos:
-			pos = i.getPosicion()
+	def __draw(self):
+		canvas = self.__drawArea
+		nodes = self.__grafo.getNodes()
+		edges = self.__grafo.getEdges()
+		cavas.delete(ALL)
+		for i in nodoes:
+			pos = i.getPosition()
 			supIzX = pos[0] - 10
 			supIzY = pos[1] - 10
 			infDerx = pos[0] + 10
 			infDerY = pos[1] + 10 
-			tmpId = lienzo.create_oval(supIzX,supIzY,infDerx,infDerY,fill='black')
+			tmpId = canvas.create_oval(supIzX,supIzY,infDerx,infDerY,fill='black')
 			id = i.getId()
 			i.setId(tmpId)
-			self.__grafo.actualizaVertices(id,tmpId)
+			self.__grafo.updateEdges(id,tmpId)
 
 
 		for i in aristas:
@@ -229,13 +231,13 @@ class Squishy:
 		supIzqY = evento.y - 10
 		infDerX = evento.x + 10
 		infDerY = evento.y + 10
-		id = self.__areaDibujo.create_oval(supIzqX,supIzqY,infDerX,infDerY,fill='black')
-		self.__grafo.nuevoNodo(id,"NUevo",(evento.x,evento.y))
+		id = self.__drawArea.create_oval(supIzqX,supIzqY,infDerX,infDerY,fill='black')
+		self.__grafo.nuevoNodo(id,"Nuevo",(evento.x,evento.y))
 		self.__dibujar()
 	
 	def __onMotion(self,evento):
 		self.__tmpId = None
-		can = self.__areaDibujo
+		can = self.__drawArea
 		supIzqX = evento.x - 15
 		supIzqY = evento.y - 15
 		infDerX = evento.x + 15
@@ -248,7 +250,7 @@ class Squishy:
 				self.__dibujar()
 	
 	def __onDoubleClick(self, evento):
-		can = self.__areaDibujo
+		can = self.__drawArea
 		supIzqX = evento.x - 15
 		supIzqY = evento.y - 15
 		infDerX = evento.x + 15

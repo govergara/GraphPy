@@ -1,0 +1,43 @@
+#env /bin/python2
+from Tkinter import *
+
+def mover(evento, vertices, flechas):
+	can = evento.widget
+	supIzqX = evento.x - 15
+	supIzqY = evento.y - 15
+	infDerX = evento.x + 15
+	infDerY = evento.y + 15
+ 	elementos = can.find_overlapping(supIzqX,supIzqY,infDerX,infDerY)
+	for i in elementos:
+		if can.type(i) == "oval":
+			pos = can.coords(i)
+			x = evento.x - pos[0]
+			y = evento.y - pos[1]
+			can.move(i,x,y)
+	for i in flechas:
+		can.delete(i)
+		tmp = flechas.index(i)
+		flechas.pop(tmp)
+	
+	for i in vertices:
+		pos1 = can.coords(i[0])
+		pos2 = can.coords(i[1])
+		flechas.append(can.create_line(pos1[0]+10,pos1[1]+10,pos2[0]+10,pos2[1]+20,arrow=LAST))
+	return flechas
+
+
+
+
+dios = Tk()
+canvas = Canvas(dios, width=400, height=400)
+id = canvas.create_oval(190,190,210,210,fill='black')
+id2 = canvas.create_oval(11,11,31,31,fill='black')
+vertices = [(id,id2)];
+f = []
+def manejador(event, v = vertices, f = f):
+	
+	f = mover(event,v,f)
+	return True
+canvas.bind("<B1-Motion>",manejador)
+canvas.pack()
+mainloop()

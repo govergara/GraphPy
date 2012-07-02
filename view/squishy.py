@@ -1,3 +1,9 @@
+<<<<<<< HEAD:Squishy.py
+# EL ARREDONDO NO HIZO NADA!!
+# SI HICE ALGO!!! @RREDONDIN
+
+=======
+>>>>>>> upstream/master:view/squishy.py
 try:
 	from Tkinter import *
 except:

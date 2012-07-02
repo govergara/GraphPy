@@ -1,5 +1,3 @@
-import matrix
-
 class Graph:
 
 	def __init__(self):

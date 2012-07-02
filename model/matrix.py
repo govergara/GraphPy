@@ -4,7 +4,6 @@ class Matrix:
 	def __init__(self, dim):
 		self.__dimMatrix = dim
 		self.__matrix = self.__set_matrix(dim)
-		self.__identity = self.__set_identity(dim)
 
 	#
 	#  PRIVATE METHODS
@@ -20,16 +19,6 @@ class Matrix:
 			for j in range(dim):
 				matrix[i].append(0)
 		return matrix
-
-	def __set_identity(self, dim):
-		"""Para una dimension "dim":
-		Crea una nueva matriz. Todos sus elementos tienen el valor '0'
-		Los elementos de la diagonal principal toman el valor '1'
-		Retorna la nueva matriz"""
-		identity = self.__set_matrix(dim)
-		for i in range(dim):
-			identity[i][i] = 1
-		return identity
 
 	#
 	#  PUBLIC METHODS
@@ -66,7 +55,7 @@ class Matrix:
 		self.__matrix.pop(target)
 		for i in self.__matrix:
 			self.__matrix[i].pop(target)
-			dim -= 1
+		dim -= 1
 		return dim
 
 	def symmetry(self):

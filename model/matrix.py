@@ -1,4 +1,4 @@
-import copy
+import copy	# Para hacer copias superficiales (shallow copies)
 
 class Matrix:
 	def __init__(self, dim):

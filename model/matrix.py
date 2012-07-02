@@ -1,6 +1,7 @@
-class Matrix:
+import copy
 
-	def __int__(self, dim):
+class Matrix:
+	def __init__(self, dim):
 		self.__dimMatrix = dim
 		self.__matrix = self.__set_matrix(dim)
 		self.__identity = self.__set_identity(dim)
@@ -34,13 +35,15 @@ class Matrix:
 	#  PUBLIC METHODS
 	#
 
-	#  NOT IMPLEMENTED YET
-	#	ADDITION (necessary?)
-	#	MULTIPLICATION (necessary?)
-	#	SYMMETRY (directed / no directed)
-
 	def get_dim(self):
-		return self.__dimMatrix
+		"""Retorna una copia 'superficial' (por valor) de la dimension"""
+		dim = copy.copy(self.__dimMatrix)
+		return dim
+
+	def get_matrix(self):
+		"""Retorna una copia 'superficial' (por valor) de la matriz"""
+		matrix = copy.copy(self.__matrix)
+		return matrix
 
 	def add_node(self):
 		"""Agrega los datos de un nodo (nueva fila y columna)
@@ -55,10 +58,6 @@ class Matrix:
 			self.__matrix[i].append(0)
 		return dim
 
-	def set_element(row, col, value):
-		"""Inserta un valor en el elemento (row, col) de la matriz"""
-		self.__matrix[row][col] = value
-
 	def del_node(self, target):
 		"""Para un indice "target":
 		Elimina los datos de un nodo (fila & columna respectiva)
@@ -69,3 +68,19 @@ class Matrix:
 			self.__matrix[i].pop(target)
 			dim -= 1
 		return dim
+
+	def symmetry(self):
+		"""Determina si la matriz es simetrica o no
+		Retorna 'True' si es simetrica, 'False' si no lo es"""
+		dim = self.__dimMatrix
+		for i in dim:
+			for j in dim:
+				if j <= i:
+					continue
+				if self.__matrix[i][j] != self.__matrix[j][i]:
+					return False
+		return True
+
+	def set_entry(row, col, value):
+		"""Inserta un valor en el elemento (row, col) de la matriz"""
+		self.__matrix[row][col] = value

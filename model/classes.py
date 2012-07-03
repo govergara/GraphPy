@@ -41,13 +41,11 @@ class Matrix:
 		Retorna la nueva dimension de la matriz"""
 		try:
 			new = []
-			dim = self.__dimMatrix
-			for i in range(dim):
+			for i in range(self.__dimMatrix):
 				new.append(0)
 			self.__matrix.append(new)
-			dim += 1
-			self._Matrix__dimMatrix += 1
-			for i in range(dim):
+			self.__dimMatrix += 1
+			for i in range(self.__dimMatrix):
 				self.__matrix[i].append(0)
 		except:
 			return False
@@ -61,7 +59,7 @@ class Matrix:
 			self.__matrix.pop(target)
 			for i in self.__matrix:
 				self.__matrix[i].pop(target)
-			self._Matrix__dimMatrix -= 1
+			self.__dimMatrix -= 1
 		except:
 			return False
 		return True
@@ -105,7 +103,7 @@ class Graph:
 	
 	def __validate_target(self, target):
 		dim = self.__matrix.get_dim()
-		if target >= 0 and target < dim
+		if target >= 0 and target < dim:
 			return True
 		print "Invalid Target!"
 		return False
@@ -165,11 +163,11 @@ class Graph:
 				if colored[i] == 0:
 					colored[i] = 1
 				if matrix[i][j] != 0:
-					if colored[j] == 0 and colored[i] == 1
+					if colored[j] == 0 and colored[i] == 1:
 						colored[j] == 2
-					if colored[j] == 0 and colored[i] == 2
+					if colored[j] == 0 and colored[i] == 2:
 						colored[j] == 1
-					if colored[j] != 0 and colored[i] == colored[j]
+					if colored[j] != 0 and colored[i] == colored[j]:
 						return False
 		return True
 	

@@ -45,6 +45,7 @@ class Matrix:
 			new.append(0)
 		self.__matrix.append(new)
 		dim += 1
+		self._Matrix__dimMatrix += 1
 		for i in range(dim):
 			self.__matrix[i].append(0)
 		return dim
@@ -58,6 +59,7 @@ class Matrix:
 		for i in self.__matrix:
 			self.__matrix[i].pop(target)
 		dim -= 1
+		self._Matrix__dimMatrix -= 1
 		return dim
 	
 	def symmetry(self):

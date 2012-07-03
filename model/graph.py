@@ -5,8 +5,8 @@ class Graph:
 	Utiliza la Matriz de Adyacencia/Incidencia"""
 	
 	def __init__(self):
-		self.__matrix = Matrix(1)
-		self.__nodes = 1
+		self.__matrix = Matrix(0)
+		self.__nodes = 0
 	
 	#
 	#  PRIVATE METHODS
@@ -29,8 +29,14 @@ class Graph:
 	def del_node(self):
 		pass
 	
-	def change_relation(self):
-		pass
+	def change_relation(self, orig, dest, weight):
+		"""Para dos indices 'orig' y 'dest', y un peso de camino 'Weight':
+		Modifica (o setea) una relacion entre dos nodos
+		Retorna 'False' si los indices no son validos, 'True' en otro caso"""
+		if self.__validate_target(orig) and self.__validate_target(dest):
+			self.__matrix.set_entry(orig, dest, weight)
+			return True
+		return False
 	
 	def get_matrix(self):
 		"""Retorna una copia de la Matriz de Incidencia/Adyacencia"""
@@ -47,14 +53,32 @@ class Graph:
 		"""Determina si el grafo es completo o no
 		Retorna 'True' si es completa, 'False' si no lo es"""
 		cantNodos = self.__nodes
-		matrix = 
 		for i in cantNodos:
 			if self.degree(i) != (cantNodos - 1):
 				return False
 		return True
 	
 	def bipartite(self):
-		pass
+		color1 = 1
+		color2 = 2
+		matrix = self.__matrix.get_matrix()
+		dim = self.__matrix.get_dim()
+		colored = []
+		for i in dim:
+			colored.append(0)
+		
+		for i in dim:
+			for j in dim:
+				if colored[i] == 0:
+					colored[i] = 1
+				if matrix[i][j] != 0:
+					if colored[j] == 0 and colored[i] == 1
+						colored[j] == 2
+					if colored[j] == 0 and colored[i] == 2
+						colored[j] == 1
+					if colored[j] != 0 and colored[i] == colored[j]
+						return False
+		return True
 	
 	def degree(self, node):
 		"""Para un nodo 'node':

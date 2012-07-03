@@ -1,1 +1,3 @@
-# Emtpy file
+import graph
+
+graphs = []

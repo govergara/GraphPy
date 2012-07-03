@@ -24,10 +24,12 @@ class Graph:
 	#
 	
 	def add_node(self):
-		pass
+		return self.__matrix.add_entry()
 	
-	def del_node(self):
-		pass
+	def del_node(self, node):
+		if self.__validate_target(node):
+			return self.__matrix.del_entry(node)
+		return False
 	
 	def change_relation(self, orig, dest, weight):
 		"""Para dos indices 'orig' y 'dest', y un peso de camino 'Weight':

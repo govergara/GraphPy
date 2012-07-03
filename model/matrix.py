@@ -75,3 +75,11 @@ class Matrix:
 	def set_entry(row, col, value):
 		"""Inserta un valor en el elemento (row, col) de la matriz"""
 		self.__matrix[row][col] = value
+	
+	def num_relations(self, entry):
+		dim = self.__dimMatrix
+		relations = 0
+		for i in dim:
+			if self.__matrix[node][i] != 0:
+				relations += 1
+		return relations

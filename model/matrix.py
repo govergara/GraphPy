@@ -36,31 +36,35 @@ class Matrix:
 		matrix = copy.copy(self.__matrix)
 		return matrix
 	
-	def add_node(self):
+	def add_entry(self):
 		"""Agrega los datos de un nodo (nueva fila y columna)
 		Retorna la nueva dimension de la matriz"""
-		new = []
-		dim = self.__dimMatrix
-		for i in range(dim):
-			new.append(0)
-		self.__matrix.append(new)
-		dim += 1
-		self._Matrix__dimMatrix += 1
-		for i in range(dim):
-			self.__matrix[i].append(0)
-		return dim
+		try:
+			new = []
+			dim = self.__dimMatrix
+			for i in range(dim):
+				new.append(0)
+			self.__matrix.append(new)
+			dim += 1
+			self._Matrix__dimMatrix += 1
+			for i in range(dim):
+				self.__matrix[i].append(0)
+		except:
+			return False
+		return True
 	
-	def del_node(self, target):
+	def del_entry(self, target):
 		"""Para un indice "target":
 		Elimina los datos de un nodo (fila & columna respectiva)
 		Retorna la nueva dimension de la matriz"""
-		dim = self.__dimMatrix
-		self.__matrix.pop(target)
-		for i in self.__matrix:
-			self.__matrix[i].pop(target)
-		dim -= 1
-		self._Matrix__dimMatrix -= 1
-		return dim
+		try:
+			self.__matrix.pop(target)
+			for i in self.__matrix:
+				self.__matrix[i].pop(target)
+			self._Matrix__dimMatrix -= 1
+		except:
+			return False
+		return True
 	
 	def symmetry(self):
 		"""Determina si la matriz es simetrica o no

@@ -1,3 +1,0 @@
-[user]
-email = go.vergara.a@gmail.com
-name = Gonzalo Vergara Almonacid

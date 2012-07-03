@@ -57,12 +57,16 @@ class Matrix:
 		Retorna la nueva dimension de la matriz"""
 		try:
 			self.__matrix.pop(target)
-			for i in self.__matrix:
+			for i in range(self.__dimMatrix - 1):
 				self.__matrix[i].pop(target)
 			self.__dimMatrix -= 1
 		except:
 			return False
 		return True
+	
+	def set_entry(self, row, col, value):
+		"""Inserta un valor en el elemento (row, col) de la matriz"""
+		self.__matrix[row][col] = value
 	
 	def symmetry(self):
 		"""Determina si la matriz es simetrica o no
@@ -75,10 +79,6 @@ class Matrix:
 				if self.__matrix[i][j] != self.__matrix[j][i]:
 					return False
 		return True
-	
-	def set_entry(row, col, value):
-		"""Inserta un valor en el elemento (row, col) de la matriz"""
-		self.__matrix[row][col] = value
 	
 	def num_relations(self, entry):
 		dim = self.__dimMatrix
@@ -175,5 +175,35 @@ class Graph:
 		"""Para un nodo 'node':
 		Retorna el grado del nodo"""
 		if self.__validate_target(node):
-			return self.__matrix.num_relations()
+			return self.__matrix.num_relations(node)
 		return None
+	
+	def dijkstra(self, origin):
+		"""Para un nodo 'origin':
+		Determina el camino mas corto desde 'origin' al resto de los nodos
+		Retorna una lista de diccionarios con los datos de Dijkstra"""
+		roads = []
+		dim = self.__matrix.get_dim()
+		matrix = self.__matrix.get_matrix()
+		for i in dim:
+			roads.append([])
+			data = {'dist': -1, 'from': -1, 'set': 0}
+			if i == origin:
+				data['dist'] = 0	
+			roads[i].append(data)
+		
+		for i in dim:
+			for j in dim:
+				roads[origin]['set'] = 1
+				if matrix[origin][j] != 0:
+					roads[j]['dist'] = matrix[origin][j] + roads[origin]['dist']
+					roads[j]['from'] = origin
+			menor = -1
+			for j in dim:
+				if roads[j]['set'] == 0:
+					if menor == -1 and roads[j]['dist'] > 0:
+						menor = j
+					elif roads[j]['dist'] < roads[menor]['dist']:
+						menor = j
+			origin = menor
+		return roads

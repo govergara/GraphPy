@@ -1,3 +1,3 @@
-import graph
+import classes
 
 graphs = []

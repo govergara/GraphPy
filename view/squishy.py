@@ -96,7 +96,7 @@ class Graph:
 		self.__nodes = []
 		self.__edges = []
 	
-	def nuevoNode(self, id, et, pos):
+	def newNode(self, id, et, pos):
 		try:
 			tmp = Node(id,pos,et)
 			self.__nodes.append(tmp)
@@ -104,7 +104,7 @@ class Graph:
 		except:
 			return False
 	
-	def nuevaEdge(self, weight,connection):
+	def newEdge(self, weight,connection):
 		try:
 			tmpEdge = Edge(weight,connection)
 			self.__edges.append(tmpEdge)
@@ -148,7 +148,7 @@ class Graph:
 				i.setConnection(new)
 			elif connection[1] == old:
 				new = (connection[0],newId)
-				i.setConnection(nuevo)
+				i.setConnection(new)
 		
 
 class Squishy:
@@ -202,10 +202,10 @@ class Squishy:
 	
 	def __draw(self):
 		canvas = self.__drawArea
-		nodes = self.__grafo.getNodes()
-		edges = self.__grafo.getEdges()
-		cavas.delete(ALL)
-		for i in nodoes:
+		nodes = self.__graph.getNodes()
+		edges = self.__graph.getEdges()
+		canvas.delete(ALL)
+		for i in nodes:
 			pos = i.getPosition()
 			supIzX = pos[0] - 10
 			supIzY = pos[1] - 10
@@ -214,65 +214,65 @@ class Squishy:
 			tmpId = canvas.create_oval(supIzX,supIzY,infDerx,infDerY,fill='black')
 			id = i.getId()
 			i.setId(tmpId)
-			self.__grafo.updateEdges(id,tmpId)
+			self.__graph.updateEdges(id,tmpId)
 
 
-		for i in aristas:
-			conectados = i.getConexion()
-			nod1 = self.__grafo.getNodo(conectados[0])
-			nod2 = self.__grafo.getNodo(conectados[1])
-			pos1 = nod1.getPosicion()
-			pos2 = nod2.getPosicion()
-			lienzo.create_line(pos1[0],pos1[1],pos2[0],pos2[1],arrow=LAST)
+		for i in edges:
+			connected = i.getConnection()
+			nod1 = self.__graph.getNode(connected[0])
+			nod2 = self.__graph.getNode(connected[1])
+			pos1 = nod1.getPosition()
+			pos2 = nod2.getPosition()
+			canvas.create_line(pos1[0],pos1[1],pos2[0],pos2[1],arrow=LAST)
 	
-	def __onBackClick(self, evento):
+	def __onBackClick(self, event):
 		self.__tmpId = None
-		supIzqX = evento.x - 10
-		supIzqY = evento.y - 10
-		infDerX = evento.x + 10
-		infDerY = evento.y + 10
+		supIzqX = event.x - 10
+		supIzqY = event.y - 10
+		infDerX = event.x + 10
+		infDerY = event.y + 10
 		id = self.__drawArea.create_oval(supIzqX,supIzqY,infDerX,infDerY,fill='black')
-		self.__grafo.nuevoNodo(id,"Nuevo",(evento.x,evento.y))
-		self.__dibujar()
+		self.__graph.newNode(id,"Nuevo",(event.x,event.y))
+		self.__draw()
 	
-	def __onMotion(self,evento):
+	def __onMotion(self,event):
 		self.__tmpId = None
 		can = self.__drawArea
-		supIzqX = evento.x - 15
-		supIzqY = evento.y - 15
-		infDerX = evento.x + 15
-		infDerY = evento.y + 15
- 		elemento = can.find_overlapping(supIzqX,supIzqY,infDerX,infDerY)
-		if len(elemento) >=1 :
-			if can.type(elemento[0]) == "oval":
-				nodo = self.__grafo.getNodo(elemento[0])
-				nodo.setPosicion((evento.x,evento.y))
-				self.__dibujar()
+		supIzqX = event.x - 15
+		supIzqY = event.y - 15
+		infDerX = event.x + 15
+		infDerY = event.y + 15
+ 		element = can.find_overlapping(supIzqX,supIzqY,infDerX,infDerY)
+		if len(element) >=1 :
+			if can.type(element[0]) == "oval":
+				nodo = self.__graph.getNode(element[0])
+				nodo.setPosition((event.x,event.y))
+				self.__draw()
 	
-	def __onDoubleClick(self, evento):
+	def __onDoubleClick(self, event):
 		can = self.__drawArea
-		supIzqX = evento.x - 15
-		supIzqY = evento.y - 15
-		infDerX = evento.x + 15
-		infDerY = evento.y + 15
- 		elementos = can.find_overlapping(supIzqX,supIzqY,infDerX,infDerY)
-		if len(elementos) >= 1:
-			if can.type(elementos[0]) == "oval":
+		supIzqX = event.x - 15
+		supIzqY = event.y - 15
+		infDerX = event.x + 15
+		infDerY = event.y + 15
+ 		elements = can.find_overlapping(supIzqX,supIzqY,infDerX,infDerY)
+		if len(elements) >= 1:
+			if can.type(elements[0]) == "oval":
 				if self.__tmpId is None:
-					self.__tmpId = elementos[0]
+					self.__tmpId = elements[0]
 				else:
-					if self.__tmpId != elementos[0]:
-						conexion = (self.__tmpId, elementos[0])
-						self.__grafo.nuevaArista(0,conexion)
+					if self.__tmpId != elements[0]:
+						connection = (self.__tmpId, elements[0])
+						self.__graph.newEdge(0,connection)
 						self.__tmpId = None
-						self.__dibujar()
+						self.__draw()
 					else:
 						self.__tmpId = None
 			
 
 
 a = Squishy()
-a.lanzarSquishy()
+a.throwSquishy()
 
 		
 

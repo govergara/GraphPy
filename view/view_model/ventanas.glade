@@ -643,7 +643,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkToggleButton" id="showMatriz">
+          <object class="GtkToggleButton" id="showMatrix">
             <property name="label" translatable="yes">Ver Matriz</property>
             <property name="use_action_appearance">False</property>
             <property name="visible">True</property>

@@ -30,6 +30,11 @@ class Ui:
 	def __connect_signals(self):
 		self.__loader.connect(self.__controller)
 
+	def show_elements(self):
+		self.__menu.show()
+		self.__tools.show()
+
 	def throw_Ui(self):
+		self.show_elements()
 		gtk.main()
 		self.__draw.throw_squishy()

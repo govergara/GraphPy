@@ -9,32 +9,32 @@ except:
 		print "GTK NO DISPONIBLE EN TU SISTEMA"
 		exit(1)
 
-
-import Squishy
-import Palettes
-import Controller
-
+from Tkinter import *
+import squishy
+import palette
+from multiprocessing import Process
 
 
 class Ui:
 
 	def __init__(self):
 		self.__loader = Gtk.Builder()
-		self.__loader.add_from_file("view/view_model/ventanas.glade")
-		self.__menu = MenuWindow(self.get_object("vetanaMenu"))
-		self.__tools = MenuTools(self.get_object("ventanaHerramientas"))
-		self.__draw = Squishy.Squishy()
-		self.__controller = Controller.Controller()
-		self.__connect_signals()
-
-	def __connect_signals(self):
-		self.__loader.connect(self.__controller)
+		self.__loader.add_from_file("view_model/ventanas.glade")
+		tmp = self.__loader.get_object("menu");
+		self.__menu = palette.MenuWindow(tmp)
+		tmp.connect("destroy",Gtk.main_quit)
+		self.__tools = palette.MenuTools(self.__loader.get_object("paleta"))
+		self.__draw = squishy.Squishy()
+		
+	def connect_signals(self,controller):
+		self.__loader.connect_signals(controller)
 
 	def show_elements(self):
 		self.__menu.show()
 		self.__tools.show()
 
-	def throw_Ui(self):
+	def throw_ui(self):
 		self.show_elements()
-		gtk.main()
+		b = Process(target=Gtk.main)
+		b.start()
 		self.__draw.throw_squishy()

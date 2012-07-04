@@ -5,6 +5,7 @@ except:
 	print "PARA EJECUTAR GRAPHPY NECESITAS TK INSTALADO EN TU SO"
 
 
+
 class Node:
 
 	def __init__(self, id=-1, position=None, label=None):
@@ -133,22 +134,22 @@ class Graph:
 			return False
 	
 	def get_node(self, idTarget):
-		try_:
+		try:
 			for i in self.__nodes:
-				if idTarget == i.getId():
+				if idTarget == i.get_id():
 					return i
 		except:
 			return None
 	
 	def update_edges(self,old, newId):
 		for i in self.__edges:
-			connection = i.getConnection()
+			connection = i.get_connection()
 			if connection[0] == old:
 				new = (newId,connection[1])
-				i.setConnection(new)
+				i.set_connection(new)
 			elif connection[1] == old:
 				new = (connection[0],newId)
-				i.setConnection(new)
+				i.set_connection(new)
 		
 
 class Squishy:
@@ -167,15 +168,13 @@ class Squishy:
 		self.__status = 1
 		self.__widgets = []
 		self.__tmpId =  None
+	
 
 	def throw_squishy(self):
-		try:
-			mainloop()
-		except:
-			return False
-	
+		mainloop()
+		
 	def get_graph(self):
-		try_:
+		try:
 			return self.__graph
 		except:
 			return None
@@ -202,27 +201,27 @@ class Squishy:
 	
 	def __draw(self):
 		canvas = self.__drawArea
-		nodes = self.__graph.getNodes()
-		edges = self.__graph.getEdges()
+		nodes = self.__graph.get_nodes()
+		edges = self.__graph.get_edges()
 		canvas.delete(ALL)
 		for i in nodes:
-			pos = i.getPosition()
+			pos = i.get_position()
 			supIzX = pos[0] - 10
 			supIzY = pos[1] - 10
 			infDerx = pos[0] + 10
 			infDerY = pos[1] + 10 
 			tmpId = canvas.create_oval(supIzX,supIzY,infDerx,infDerY,fill='black')
-			id = i.getId()
-			i.setId(tmpId)
-			self.__graph.updateEdges(id,tmpId)
+			id = i.get_id()
+			i.set_id(tmpId)
+			self.__graph.update_edges(id,tmpId)
 
 
 		for i in edges:
-			connected = i.getConnection()
-			nod1 = self.__graph.getNode(connected[0])
-			nod2 = self.__graph.getNode(connected[1])
-			pos1 = nod1.getPosition()
-			pos2 = nod2.getPosition()
+			connected = i.get_connection()
+			nod1 = self.__graph.get_node(connected[0])
+			nod2 = self.__graph.get_node(connected[1])
+			pos1 = nod1.get_position()
+			pos2 = nod2.get_position()
 			canvas.create_line(pos1[0],pos1[1],pos2[0],pos2[1],arrow=LAST)
 	
 	def __onBackClick(self, event):
@@ -232,7 +231,7 @@ class Squishy:
 		infDerX = event.x + 10
 		infDerY = event.y + 10
 		id = self.__drawArea.create_oval(supIzqX,supIzqY,infDerX,infDerY,fill='black')
-		self.__graph.newNode(id,"Nuevo",(event.x,event.y))
+		self.__graph.new_node(id,"Nuevo",(event.x,event.y))
 		self.__draw()
 	
 	def __onMotion(self,event):
@@ -245,8 +244,8 @@ class Squishy:
  		element = can.find_overlapping(supIzqX,supIzqY,infDerX,infDerY)
 		if len(element) >=1 :
 			if can.type(element[0]) == "oval":
-				nodo = self.__graph.getNode(element[0])
-				nodo.setPosition((event.x,event.y))
+				nodo = self.__graph.get_node(element[0])
+				nodo.set_position((event.x,event.y))
 				self.__draw()
 	
 	def __onDoubleClick(self, event):
@@ -263,14 +262,12 @@ class Squishy:
 				else:
 					if self.__tmpId != elements[0]:
 						connection = (self.__tmpId, elements[0])
-						self.__graph.newEdge(0,connection)
+						self.__graph.new_edge(0,connection)
 						self.__tmpId = None
 						self.__draw()
 					else:
 						self.__tmpId = None
 			
-
-
 
 		
 

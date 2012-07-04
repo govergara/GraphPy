@@ -217,6 +217,8 @@ class Graph:
 			origin = menor
 		return roads
 
+# Esto es para probar el algoritmo
+
 g = Graph()
 g.add_node()
 g.add_node()

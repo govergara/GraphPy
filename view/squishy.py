@@ -12,40 +12,40 @@ class Node:
 		self.__label = label
 		self.__position = position
 			
-	def setLabel(self, newLabel):
+	def set_label(self, newLabel):
 		try:
 			self.__label = newLabel
 			return True
 		except:
 			return False
 	
-	def getLabel(self):
+	def get_label(self):
 		try:
 			return self.__label
 		except:
 			return None
 	
-	def setId(self, newId):
+	def set_id(self, newId):
 		try:
 			self.__id = newId
 			return True
 		except:
 			return False
 
-	def getId(self):
+	def get_id(self):
 		try:
 			return self.__id
 		except:
 			return None
 	
-	def setPosition(self, newPosition):
+	def set_position(self, newPosition):
 		try:
 			self.__position = newPosition
 			return True
 		except:
 			return False
 
-	def getPosition(self):
+	def get_position(self):
 		try:
 			return self.__position
 		except:
@@ -61,27 +61,27 @@ class Edge:
 		self.__weight = weight
 		self.__connection = connection
 	
-	def setConnection(self, newConnection):
+	def set_connection(self, newConnection):
 		try:
 			self.__connection = newConnection
 			return True
 		except:
 			return False
 	
-	def getConnection(self):
+	def get_connection(self):
 		try:
 			return self.__connection
 		except:
 			return None
 	
-	def setWeight(self, newWeight):
+	def set_weight(self, newWeight):
 		try:
 			self.__weight = newWeight
 			return True
 		except:
 			return False
 	
-	def getWeight(self):
+	def get_weight(self):
 		try:
 			return self.__weight
 		except:
@@ -96,7 +96,7 @@ class Graph:
 		self.__nodes = []
 		self.__edges = []
 	
-	def newNode(self, id, et, pos):
+	def new_node(self, id, et, pos):
 		try:
 			tmp = Node(id,pos,et)
 			self.__nodes.append(tmp)
@@ -104,7 +104,7 @@ class Graph:
 		except:
 			return False
 	
-	def newEdge(self, weight,connection):
+	def new_edge(self, weight,connection):
 		try:
 			tmpEdge = Edge(weight,connection)
 			self.__edges.append(tmpEdge)
@@ -112,35 +112,35 @@ class Graph:
 		except:
 			return False
 	
-	def getNodes(self):
+	def get_nodes(self):
 		return self.__nodes
 	
-	def getEdges(self):
+	def get_edges(self):
 		return self.__edges
 	
-	def delNode(self, idTarget):
+	def del_node(self, idTarget):
 		try:
 			self.__nodes.remove(idTarget)
 			return True
 		except:
 			return False
 
-	def delEdge(self, edgeTarget):
+	def del_edge(self, edgeTarget):
 		try:
 			self.__aristas.remove(edgeTarget)
 			return True
 		except:
 			return False
 	
-	def getNode(self, idTarget):
-		try:
+	def get_node(self, idTarget):
+		try_:
 			for i in self.__nodes:
 				if idTarget == i.getId():
 					return i
 		except:
 			return None
 	
-	def updateEdges(self,old, newId):
+	def update_edges(self,old, newId):
 		for i in self.__edges:
 			connection = i.getConnection()
 			if connection[0] == old:
@@ -168,32 +168,32 @@ class Squishy:
 		self.__widgets = []
 		self.__tmpId =  None
 
-	def throwSquishy(self):
+	def throw_squishy(self):
 		try:
 			mainloop()
 		except:
 			return False
 	
-	def getGraph(self):
-		try:
+	def get_graph(self):
+		try_:
 			return self.__graph
 		except:
 			return None
 	
-	def getPicture(self, strRuta):
+	def get_picture(self, strRuta):
 		pass
 	
-	def setStatus(self, newStatus):
+	def set_status(self, newStatus):
 		try:
 			self.__status = newStatus
 			return True
 		except:
 			return False
 	
-	def getStatus(self):
+	def get_status(self):
 		return self.__status
 	
-	def setGraph( self, newGraph):
+	def set_sraph( self, newGraph):
 		try:
 			self.__graph = newGraph
 			return True
@@ -271,8 +271,6 @@ class Squishy:
 			
 
 
-a = Squishy()
-a.throwSquishy()
 
 		
 

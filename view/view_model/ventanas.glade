@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
-  <object class="GtkImage" id="copy">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixbuf">_active_ Copy.ico</property>
-  </object>
   <object class="GtkFileChooserDialog" id="Open">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
@@ -139,10 +134,10 @@
       <action-widget response="0">cancel2</action-widget>
     </action-widgets>
   </object>
-  <object class="GtkImage" id="image4">
+  <object class="GtkImage" id="copy">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">_active_ Remove (Delete).ico</property>
+    <property name="pixbuf">_active_ Copy.ico</property>
   </object>
   <object class="GtkImage" id="crtl-r">
     <property name="visible">True</property>
@@ -158,16 +153,6 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixbuf">_active_ Cut.ico</property>
-  </object>
-  <object class="GtkImage" id="image5">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixbuf">_active_ About.ico</property>
-  </object>
-  <object class="GtkImage" id="image6">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixbuf">table.png</property>
   </object>
   <object class="GtkImage" id="export">
     <property name="visible">True</property>
@@ -188,6 +173,21 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixbuf">_active_ Add.ico</property>
+  </object>
+  <object class="GtkImage" id="image4">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">_active_ Remove (Delete).ico</property>
+  </object>
+  <object class="GtkImage" id="image5">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">_active_ About.ico</property>
+  </object>
+  <object class="GtkImage" id="image6">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">table.png</property>
   </object>
   <object class="GtkWindow" id="menu">
     <property name="can_focus">False</property>
@@ -643,7 +643,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkToggleButton" id="showMatrix">
+          <object class="GtkToggleButton" id="showMatriz">
             <property name="label" translatable="yes">Ver Matriz</property>
             <property name="use_action_appearance">False</property>
             <property name="visible">True</property>

@@ -72,18 +72,18 @@ class Matrix:
 		"""Determina si la matriz es simetrica o no
 		Retorna 'True' si es simetrica, 'False' si no lo es"""
 		dim = self.__dimMatrix
-		for i in dim:
-			for j in dim:
+		for i in range(dim):
+			for j in range(dim):
 				if j <= i:
 					continue
 				if self.__matrix[i][j] != self.__matrix[j][i]:
 					return False
 		return True
 	
-	def num_relations(self, entry):
+	def num_relations(self, entry): # revisar error
 		dim = self.__dimMatrix
-		relations = 0
-		for i in dim:
+		relations = 0 # aqui esta el error
+		for i in range(dim):
 			if self.__matrix[node][i] != 0:
 				relations += 1
 		return relations
@@ -144,22 +144,22 @@ class Graph:
 		"""Determina si el grafo es completo o no
 		Retorna 'True' si es completa, 'False' si no lo es"""
 		cantNodos = self.__nodes
-		for i in cantNodos:
+		for i in range(cantNodos):
 			if self.degree(i) != (cantNodos - 1):
 				return False
 		return True
 	
-	def bipartite(self):
+	def bipartite(self): # revisar error
 		color1 = 1
 		color2 = 2
 		matrix = self.__matrix.get_matrix()
 		dim = self.__matrix.get_dim()
 		colored = []
-		for i in dim:
+		for i in range(dim):
 			colored.append(0)
 		
-		for i in dim:
-			for j in dim:
+		for i in range(dim):
+			for j in range(dim):
 				if colored[i] == 0:
 					colored[i] = 1
 				if matrix[i][j] != 0:
@@ -171,36 +171,45 @@ class Graph:
 						return False
 		return True
 	
-	def degree(self, node):
+	def degree(self, node): # revisar error
 		"""Para un nodo 'node':
 		Retorna el grado del nodo"""
 		if self.__validate_target(node):
-			return self.__matrix.num_relations(node)
+			return self.__matrix.num_relations(node) # aqui esta el error
 		return None
 	
-	def dijkstra(self, origin):
+	def dijkstra(self, origin): # revisar error
 		"""Para un nodo 'origin':
 		Determina el camino mas corto desde 'origin' al resto de los nodos
 		Retorna una lista de diccionarios con los datos de Dijkstra"""
 		roads = []
 		dim = self.__matrix.get_dim()
 		matrix = self.__matrix.get_matrix()
-		for i in dim:
+		for i in range(dim):
 			roads.append([])
 			data = {'dist': -1, 'from': -1, 'set': 0}
+			#  'dist': distancia acumulada, (-1) representa distancia infinita
+			#  'from': nodo del que proviene la distancia menor, (-1) indica sin origen
+			#  'set': (0) no visitado, (1) visitado como "destino", (2) utilizado como origen
 			if i == origin:
-				data['dist'] = 0	
+				data['dist'] = 0
 			roads[i].append(data)
-		
-		for i in dim:
-			for j in dim:
-				roads[origin]['set'] = 1
+		print roads
+		for i in range(dim):
+			for j in range(dim):
+				roads[origin]['set'] = 2 # aqui esta el error
 				if matrix[origin][j] != 0:
-					roads[j]['dist'] = matrix[origin][j] + roads[origin]['dist']
-					roads[j]['from'] = origin
+					accumulated = matrix[origin][j] + roads[origin]['dist']
+					if roads[j]['set'] == 0:
+						roads[j]['dist'] = accumulated
+						roads[j]['from'] = origin
+						roads[j]['set'] = 1
+					elif roads[j]['set'] == 1 and accumulated < roads[j]['dist']:
+						roads[j]['dist'] = accumulated
+						roads[j]['from'] = origin
 			menor = -1
-			for j in dim:
-				if roads[j]['set'] == 0:
+			for j in range(dim):
+				if roads[j]['set'] == 1:
 					if menor == -1 and roads[j]['dist'] > 0:
 						menor = j
 					elif roads[j]['dist'] < roads[menor]['dist']:

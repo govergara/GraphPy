@@ -64,7 +64,7 @@ class Matrix:
 			return False
 		return True
 	
-	def set_entry(self, row, col, value):
+	def set_relation(self, row, col, value):
 		"""Inserta un valor en el elemento (row, col) de la matriz"""
 		self.__matrix[row][col] = value
 	
@@ -80,11 +80,11 @@ class Matrix:
 					return False
 		return True
 	
-	def num_relations(self, entry): # revisar error
+	def num_relations(self, entry):
 		dim = self.__dimMatrix
-		relations = 0 # aqui esta el error
+		relations = 0
 		for i in range(dim):
-			if self.__matrix[node][i] != 0:
+			if self.__matrix[entry][i] != 0:
 				relations += 1
 		return relations
 
@@ -125,7 +125,7 @@ class Graph:
 		Modifica (o setea) una relacion entre dos nodos
 		Retorna 'False' si los indices no son validos, 'True' en otro caso"""
 		if self.__validate_target(orig) and self.__validate_target(dest):
-			self.__matrix.set_entry(orig, dest, weight)
+			self.__matrix.set_relation(orig, dest, weight)
 			return True
 		return False
 	
@@ -149,7 +149,7 @@ class Graph:
 				return False
 		return True
 	
-	def bipartite(self): # revisar error
+	def bipartite(self):
 		color1 = 1
 		color2 = 2
 		matrix = self.__matrix.get_matrix()
@@ -164,18 +164,18 @@ class Graph:
 					colored[i] = 1
 				if matrix[i][j] != 0:
 					if colored[j] == 0 and colored[i] == 1:
-						colored[j] == 2
+						colored[j] = 2
 					if colored[j] == 0 and colored[i] == 2:
-						colored[j] == 1
+						colored[j] = 1
 					if colored[j] != 0 and colored[i] == colored[j]:
 						return False
 		return True
 	
-	def degree(self, node): # revisar error
+	def degree(self, node):
 		"""Para un nodo 'node':
 		Retorna el grado del nodo"""
 		if self.__validate_target(node):
-			return self.__matrix.num_relations(node) # aqui esta el error
+			return self.__matrix.num_relations(node)
 		return None
 	
 	def dijkstra(self, origin): # revisar error
@@ -216,3 +216,9 @@ class Graph:
 						menor = j
 			origin = menor
 		return roads
+
+g = Graph()
+g.add_node()
+g.add_node()
+g.change_relation(0,1,7)
+g.change_relation(1,0,7)

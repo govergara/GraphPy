@@ -1,93 +1,4 @@
-import copy	# Para hacer copias superficiales (shallow copies)
-
-class Matrix:
-	"""Clase que maneja la Matriz de Adyacencia/Incidencia"""
-	
-	def __init__(self, dim):
-		self.__dimMatrix = dim
-		self.__matrix = self.__set_matrix(dim)
-	
-	#
-	#  PRIVATE METHODS
-	#
-	
-	def __set_matrix(self, dim):
-		"""Para una dimension "dim":
-		Crea una nueva matriz. Todos sus elementos tienen el valor '0'
-		Retorna la nueva matriz"""
-		matrix = []
-		for i in range(dim):
-			matrix.append([])
-			for j in range(dim):
-				matrix[i].append(0)
-		return matrix
-	
-	#
-	#  PUBLIC METHODS
-	#
-	
-	def get_dim(self):
-		"""Retorna una copia 'superficial' (por valor) de la dimension"""
-		dim = copy.copy(self.__dimMatrix)
-		return dim
-	
-	def get_matrix(self):
-		"""Retorna una copia 'superficial' (por valor) de la matriz"""
-		matrix = copy.copy(self.__matrix)
-		return matrix
-	
-	def add_entry(self):
-		"""Agrega los datos de un nodo (nueva fila y columna)
-		Retorna la nueva dimension de la matriz"""
-		try:
-			new = []
-			for i in range(self.__dimMatrix):
-				new.append(0)
-			self.__matrix.append(new)
-			self.__dimMatrix += 1
-			for i in range(self.__dimMatrix):
-				self.__matrix[i].append(0)
-		except:
-			return False
-		return True
-	
-	def del_entry(self, target):
-		"""Para un indice "target":
-		Elimina los datos de un nodo (fila & columna respectiva)
-		Retorna la nueva dimension de la matriz"""
-		try:
-			self.__matrix.pop(target)
-			for i in range(self.__dimMatrix - 1):
-				self.__matrix[i].pop(target)
-			self.__dimMatrix -= 1
-		except:
-			return False
-		return True
-	
-	def set_relation(self, row, col, value):
-		"""Inserta un valor en el elemento (row, col) de la matriz"""
-		self.__matrix[row][col] = value
-	
-	def symmetry(self):
-		"""Determina si la matriz es simetrica o no
-		Retorna 'True' si es simetrica, 'False' si no lo es"""
-		dim = self.__dimMatrix
-		for i in range(dim):
-			for j in range(dim):
-				if j <= i:
-					continue
-				if self.__matrix[i][j] != self.__matrix[j][i]:
-					return False
-		return True
-	
-	def num_relations(self, entry):
-		dim = self.__dimMatrix
-		relations = 0
-		for i in range(dim):
-			if self.__matrix[entry][i] != 0:
-				relations += 1
-		return relations
-
+import matrix
 
 class Graph:
 	"""Clase que representa un grafo en un determinado momento
@@ -178,7 +89,7 @@ class Graph:
 			return self.__matrix.num_relations(node)
 		return None
 	
-	def dijkstra(self, origin): # revisar error
+	def dijkstra(self, origin):
 		"""Para un nodo 'origin':
 		Determina el camino mas corto desde 'origin' al resto de los nodos
 		Retorna una lista de diccionarios con los datos de Dijkstra"""
@@ -186,18 +97,16 @@ class Graph:
 		dim = self.__matrix.get_dim()
 		matrix = self.__matrix.get_matrix()
 		for i in range(dim):
-			roads.append([])
 			data = {'dist': -1, 'from': -1, 'set': 0}
 			#  'dist': distancia acumulada, (-1) representa distancia infinita
 			#  'from': nodo del que proviene la distancia menor, (-1) indica sin origen
 			#  'set': (0) no visitado, (1) visitado como "destino", (2) utilizado como origen
 			if i == origin:
 				data['dist'] = 0
-			roads[i].append(data)
-		print roads
+			roads.append(data)
 		for i in range(dim):
 			for j in range(dim):
-				roads[origin]['set'] = 2 # aqui esta el error
+				roads[origin]['set'] = 2
 				if matrix[origin][j] != 0:
 					accumulated = matrix[origin][j] + roads[origin]['dist']
 					if roads[j]['set'] == 0:

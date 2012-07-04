@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
+  <object class="GtkImage" id="copy">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">_active_ Copy.ico</property>
+  </object>
   <object class="GtkFileChooserDialog" id="Open">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
@@ -16,10 +21,34 @@
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
-              <placeholder/>
+              <object class="GtkButton" id="open-file">
+                <property name="label" translatable="yes">Abrir</property>
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkButton" id="cancel">
+                <property name="label" translatable="yes">Cancelar</property>
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
             </child>
           </object>
           <packing>
@@ -34,6 +63,10 @@
         </child>
       </object>
     </child>
+    <action-widgets>
+      <action-widget response="0">open-file</action-widget>
+      <action-widget response="0">cancel</action-widget>
+    </action-widgets>
   </object>
   <object class="GtkFileChooserDialog" id="Save">
     <property name="can_focus">False</property>
@@ -50,10 +83,34 @@
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
-              <placeholder/>
+              <object class="GtkButton" id="save-file">
+                <property name="label" translatable="yes">Guardar</property>
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkButton" id="cancel2">
+                <property name="label" translatable="yes">Cancelar</property>
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
             </child>
           </object>
           <packing>
@@ -64,20 +121,28 @@
           </packing>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkEntry" id="entry1">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">●</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
         </child>
       </object>
     </child>
+    <action-widgets>
+      <action-widget response="0">save-file</action-widget>
+      <action-widget response="0">cancel2</action-widget>
+    </action-widgets>
   </object>
-  <object class="GtkImage" id="addvertice">
+  <object class="GtkImage" id="image4">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixbuf">_active_ Remove (Delete).ico</property>
-  </object>
-  <object class="GtkImage" id="copy">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixbuf">_active_ Copy.ico</property>
   </object>
   <object class="GtkImage" id="crtl-r">
     <property name="visible">True</property>
@@ -94,15 +159,35 @@
     <property name="can_focus">False</property>
     <property name="pixbuf">_active_ Cut.ico</property>
   </object>
+  <object class="GtkImage" id="image5">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">_active_ About.ico</property>
+  </object>
+  <object class="GtkImage" id="image6">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">table.png</property>
+  </object>
   <object class="GtkImage" id="export">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixbuf">pdf.png</property>
   </object>
-  <object class="GtkImage" id="label">
+  <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">_active_ About.ico</property>
+    <property name="pixbuf">cursor.png</property>
+  </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">select.png</property>
+  </object>
+  <object class="GtkImage" id="image3">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">_active_ Add.ico</property>
   </object>
   <object class="GtkWindow" id="menu">
     <property name="can_focus">False</property>
@@ -451,11 +536,6 @@
       </object>
     </child>
   </object>
-  <object class="GtkImage" id="mouse">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixbuf">cursor.png</property>
-  </object>
   <object class="GtkImage" id="new">
     <property name="width_request">30</property>
     <property name="height_request">30</property>
@@ -463,133 +543,120 @@
     <property name="can_focus">False</property>
     <property name="pixbuf">_active_ New.ico</property>
   </object>
-  <object class="GtkImage" id="newnodo">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixbuf">_active_ Add.ico</property>
-  </object>
   <object class="GtkImage" id="open">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixbuf">_active_ Open.ico</property>
   </object>
-  <object class="GtkImage" id="select">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixbuf">select.png</property>
-  </object>
   <object class="GtkWindow" id="paleta">
     <property name="can_focus">False</property>
     <child>
-      <object class="GtkGrid" id="grid1">
+      <object class="GtkButtonBox" id="buttonbox2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="has_tooltip">True</property>
+        <property name="orientation">vertical</property>
+        <property name="layout_style">start</property>
         <child>
-          <object class="GtkToggleButton" id="Mouse">
-            <property name="label" translatable="yes">Mouse</property>
+          <object class="GtkButton" id="mouse">
+            <property name="label" translatable="yes">Cursor</property>
             <property name="use_action_appearance">False</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="use_action_appearance">False</property>
-            <property name="image">mouse</property>
+            <property name="image">image1</property>
             <property name="image_position">top</property>
           </object>
           <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <object class="GtkToggleButton" id="Newnodo">
-            <property name="label" translatable="yes">Insertar Nodo</property>
-            <property name="use_action_appearance">False</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="use_action_appearance">False</property>
-            <property name="image">newnodo</property>
-            <property name="image_position">top</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">2</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkToggleButton" id="Arista">
-            <property name="label" translatable="yes">Insertar Arista</property>
-            <property name="use_action_appearance">False</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="use_action_appearance">False</property>
-            <property name="image">addvertice</property>
-            <property name="image_position">top</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">3</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkToggleButton" id="showMatriz">
-            <property name="label" translatable="yes">Ver Matriz</property>
-            <property name="use_action_appearance">False</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="use_action_appearance">False</property>
-            <property name="image">showmatriz</property>
-            <property name="image_position">top</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">5</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkToggleButton" id="Text">
-            <property name="label" translatable="yes">Agregar texto</property>
-            <property name="use_action_appearance">False</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="use_action_appearance">False</property>
-            <property name="image">label</property>
-            <property name="image_position">top</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">4</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkToggleButton" id="Select">
+          <object class="GtkButton" id="select">
             <property name="label" translatable="yes">Seleccionar</property>
             <property name="use_action_appearance">False</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="use_action_appearance">False</property>
-            <property name="image">select</property>
+            <property name="image">image2</property>
             <property name="image_position">top</property>
           </object>
           <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">1</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="add-node">
+            <property name="label" translatable="yes">Insertar Nodo</property>
+            <property name="use_action_appearance">False</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="use_action_appearance">False</property>
+            <property name="image">image3</property>
+            <property name="image_position">top</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="add-vertice">
+            <property name="label" translatable="yes">Insertar Vértice</property>
+            <property name="use_action_appearance">False</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="use_action_appearance">False</property>
+            <property name="image">image4</property>
+            <property name="image_position">top</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="add-text">
+            <property name="label" translatable="yes">Insertar Texto</property>
+            <property name="use_action_appearance">False</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="use_action_appearance">False</property>
+            <property name="image">image5</property>
+            <property name="image_position">top</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToggleButton" id="showMatrix">
+            <property name="label" translatable="yes">Ver Matriz</property>
+            <property name="use_action_appearance">False</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="use_action_appearance">False</property>
+            <property name="image">image6</property>
+            <property name="image_position">top</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
           </packing>
         </child>
       </object>
@@ -604,10 +671,5 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixbuf">_active_ Save.ico</property>
-  </object>
-  <object class="GtkImage" id="showmatriz">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixbuf">table.png</property>
   </object>
 </interface>

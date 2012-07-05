@@ -20,7 +20,7 @@ class Graph:
 		return False
 	
 	#
-	#  PUBLIC METHODS
+	#  PUBLIC METHODS - BASIC FUNCTIONALITY
 	#
 	
 	def add_node(self):
@@ -87,7 +87,11 @@ class Graph:
 		Retorna el grado del nodo"""
 		if self.__validate_target(node):
 			return self.__matrix.num_relations(node)
-		return None
+		return 
+	
+	#
+	#  PUBLIC METHODS - GRAPH ALGORITHMS
+	#
 	
 	def dijkstra(self, origin):
 		"""Para un nodo 'origin':
@@ -125,6 +129,15 @@ class Graph:
 						menor = j
 			origin = menor
 		return roads
+	
+	def kruskal(self):
+		pass
+	
+	def path_hamilton():
+		pass
+	
+	def path_euler():
+		pass
 
 # Esto es para probar el algoritmo
 

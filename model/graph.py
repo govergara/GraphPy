@@ -22,6 +22,42 @@ class Graph:
 		print "Invalid Target!"
 		return False
 	
+	def __breadthfirst_search(matrix, origin):
+		"""Para una matriz 'matrix' y un nodo 'origin':
+		Realiza una busqueda en anchura
+		Retorna una lista de diccionarios con la informacion recopilada"""
+		status = []
+		dim = matrix.get_dim()
+		for i in range(dim):
+			data = {'dist': -1, 'from': -1, 'set': 0}
+			#  'dist': distancia acumulada, (-1) representa distancia infinita
+			#  'from': nodo del que proviene la distancia menor, (-1) indica sin origen
+			#  'set': (0) no visitado, (1) visitado como "destino", (2) utilizado como origen
+			if i == origin:
+				data['dist'] = 0
+			status.append(data)
+		for i in range(dim):
+			for j in range(dim):
+				status[origin]['set'] = 2
+				if matrix[origin][j] != 0:
+					accumulated = matrix[origin][j] + status[origin]['dist']
+					if status[j]['set'] == 0:
+						status[j]['dist'] = accumulated
+						status[j]['from'] = origin
+						status[j]['set'] = 1
+					elif status[j]['set'] == 1 and accumulated < status[j]['dist']:
+						status[j]['dist'] = accumulated
+						status[j]['from'] = origin
+			menor = -1
+			for j in range(dim):
+				if status[j]['set'] == 1:
+					if menor == -1 and status[j]['dist'] > 0:
+						menor = j
+					elif status[j]['dist'] < status[menor]['dist']:
+						menor = j
+			origin = menor
+		return status
+	
 	#
 	#  PUBLIC METHODS - BASIC FUNCTIONALITY
 	#
@@ -133,42 +169,6 @@ class Graph:
 	
 	def path_euler():
 		pass
-	
-	def breadthfirst_search(matrix, origin):
-		"""Para una matriz 'matrix' y un nodo 'origin':
-		Realiza una busqueda en anchura
-		Retorna una lista de diccionarios con la informacion recopilada"""
-		status = []
-		dim = matrix.get_dim()
-		for i in range(dim):
-			data = {'dist': -1, 'from': -1, 'set': 0}
-			#  'dist': distancia acumulada, (-1) representa distancia infinita
-			#  'from': nodo del que proviene la distancia menor, (-1) indica sin origen
-			#  'set': (0) no visitado, (1) visitado como "destino", (2) utilizado como origen
-			if i == origin:
-				data['dist'] = 0
-			status.append(data)
-		for i in range(dim):
-			for j in range(dim):
-				status[origin]['set'] = 2
-				if matrix[origin][j] != 0:
-					accumulated = matrix[origin][j] + status[origin]['dist']
-					if status[j]['set'] == 0:
-						status[j]['dist'] = accumulated
-						status[j]['from'] = origin
-						status[j]['set'] = 1
-					elif status[j]['set'] == 1 and accumulated < status[j]['dist']:
-						status[j]['dist'] = accumulated
-						status[j]['from'] = origin
-			menor = -1
-			for j in range(dim):
-				if status[j]['set'] == 1:
-					if menor == -1 and status[j]['dist'] > 0:
-						menor = j
-					elif status[j]['dist'] < status[menor]['dist']:
-						menor = j
-			origin = menor
-		return status
 
 # Esto es para probar el algoritmo
 

@@ -13,6 +13,9 @@ class Graph:
 	#
 	
 	def __validate_target(self, target):
+		"""Para un nodo 'target':
+		Determina si el nodo es valido (existe)
+		Retorna 'True' si existe, 'False' si no existe"""
 		dim = self.__matrix.get_dim()
 		if target >= 0 and target < dim:
 			return True
@@ -24,9 +27,15 @@ class Graph:
 	#
 	
 	def add_node(self):
+		"""Agrega un nuevo nodo sin conexiones
+		Retorna el valor del metodo add_entry de la matriz"""
 		return self.__matrix.add_entry()
 	
 	def del_node(self, node):
+		"""Para un nodo 'node':
+		Elimina el nodo 'node' del grafo
+		Retorna 'False' si el nodo no a eliminar no existe
+		Retorna el valor del metodo del_entry de la matriz en otro caso"""
 		if self.__validate_target(node):
 			return self.__matrix.del_entry(node)
 		return False
@@ -45,11 +54,20 @@ class Graph:
 		return self.__matrix.get_matrix()
 	
 	def directed(self):
-		"""Determina si el grafo es dirigido o no dirigido"""
+		"""Determina si el grafo es dirigido o no dirigido
+		Retorna el valor del metodo 'symmetry' de la matriz asociada"""
 		return self.__matrix.symmetry()
 	
 	def connected(self):
-		pass
+		"""Determina, utilizando Dijkstra, si el grafo es conexo o no
+		Retorna 'True' si es conexo, 'False' si no lo es"""
+		dim = self.__matrix.get_dim()
+		for i in range(dim):
+			tester = self.dijkstra(i)
+			for j in range(dim):
+				if tester[j]['set'] == 0:
+					return False
+		return True
 	
 	def complete(self):
 		"""Determina si el grafo es completo o no
@@ -61,6 +79,8 @@ class Graph:
 		return True
 	
 	def bipartite(self):
+		"""Determina si el grafo es bipartito o no
+		Retorna 'True' si es bipartito, 'False' si no lo es"""
 		color1 = 1
 		color2 = 2
 		matrix = self.__matrix.get_matrix()

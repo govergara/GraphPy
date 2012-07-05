@@ -100,7 +100,7 @@ class Graph:
 		dim = self.__matrix.get_dim()
 		matrix = self.__matrix.get_matrix()
 		for i in range(dim):
-			tester = self.dijkstra(i)
+			tester = self.__breadthfirst_search(matrix, i)
 			for j in range(dim):
 				if tester[j]['set'] == 0:
 					return False
@@ -154,10 +154,10 @@ class Graph:
 		"""Para un nodo 'origin':
 		Determina el camino mas corto desde 'origin' a cualquier nodo
 		Retorna 'None' si el nodo es invalido
-		Retorna la lista del metodo 'breadthfirst_search' en otro caso"""
+		Retorna la lista del metodo '__breadthfirst_search' en otro caso"""
 		if self.__validate_target(origin):
 			matrix = self.__matrix.get_matrix()
-			roads = self.breadthfirst_search(matrix, origin)
+			roads = self.__breadthfirst_search(matrix, origin)
 			return roads
 		return None
 	

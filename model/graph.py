@@ -22,12 +22,12 @@ class Graph:
 		print "Invalid Target!"
 		return False
 	
-	def __breadthfirst_search(matrix, origin):
+	def __breadthfirst_search(self, matrix, origin):
 		"""Para una matriz 'matrix' y un nodo 'origin':
 		Realiza una busqueda en anchura
 		Retorna una lista de diccionarios con la informacion recopilada"""
 		status = []
-		dim = matrix.get_dim()
+		dim = len(matrix)
 		for i in range(dim):
 			data = {'dist': -1, 'from': -1, 'set': 0}
 			#  'dist': distancia acumulada, (-1) representa distancia infinita
@@ -158,6 +158,7 @@ class Graph:
 		if self.__validate_target(origin):
 			matrix = self.__matrix.get_matrix()
 			roads = self.__breadthfirst_search(matrix, origin)
+			# insertar interpretacion de dijkstra
 			return roads
 		return None
 	

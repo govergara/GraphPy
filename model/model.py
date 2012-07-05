@@ -1,3 +1,0 @@
-import graph
-
-graphs = []

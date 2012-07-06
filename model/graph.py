@@ -1,12 +1,13 @@
 import matrix
+import copy	# Para hacer copias superficiales (shallow copies)
 
 class Graph:
 	"""Clase que representa un grafo en un determinado momento
 	Utiliza la Matriz de Adyacencia/Incidencia"""
 	
-	def __init__(self):
-		self.__matrix = Matrix(0)
-		self.__nodes = 0
+	def __init__(self, nodes):
+		self.__matrix = Matrix(nodes)
+		self.__nodes = nodes
 	
 	#
 	#  PRIVATE METHODS
@@ -58,6 +59,57 @@ class Graph:
 			origin = menor
 		return status
 	
+	def __fleury_algorithm(self, origin): # no funciona este csm!
+		dim = self.__matrix.get_dim()
+		traveledEdges = self.__matrix.get_matrix()
+		path = []
+		path.append(origin)
+				
+		while True:
+			matrix = copy.copy(traveledEdges)
+			print 'origin ', origin
+			print 'self matrix', self.__matrix.get_matrix()
+			print 'traveledEdges ', traveledEdges
+			print 'matrix ', matrix
+			raw_input()
+			connected = 0
+			for i in range(dim):
+				if matrix[origin][i] != 0:
+					candidate = i
+					# candidate es la arista 'candidata' a ser utilizada
+					matrix[origin][i] = 0
+					data = self.__breadthfirst_search(matrix, origin)
+					connected = 1
+					# connected: 1, es conexo
+					# connected: 0, no es conexo
+					for j in range(dim):
+						if data[j]['set'] == 0:
+							connected = 0
+							break
+				if connected == 1:
+					break
+			if self.directed():
+				print 'Entre al if!'
+				traveledEdges[origin][candidate] = 0
+				print 'Borre!'
+			else:
+				print 'Entre al else!'
+				traveledEdges[origin][candidate] = 0
+				traveledEdges[candidate][origin] = 0
+				print 'Borre!'
+			
+			origin = candidate
+			finished = True
+			path.append(origin)
+			
+			for i in range(dim):
+				for j in range(dim):
+					if traveledEdges[i][j] != 0:
+						finished = False
+			if finished:
+				break
+		return path
+	
 	#
 	#  PUBLIC METHODS - BASIC FUNCTIONALITY
 	#
@@ -92,7 +144,7 @@ class Graph:
 	def directed(self):
 		"""Determina si el grafo es dirigido o no dirigido
 		Retorna el valor del metodo 'symmetry' de la matriz asociada"""
-		return self.__matrix.symmetry()
+		return not self.__matrix.symmetry()
 	
 	def connected(self):
 		"""Determina, utilizando Dijkstra, si el grafo es conexo o no
@@ -162,23 +214,43 @@ class Graph:
 			return roads
 		return None
 	
-	def kruskal(self):
+	def kruskal(self): # NOT IMPLEMENTED
 		pass
 	
-	def path_hamilton():
+	def hamiltonian_path(): # NOT IMPLEMENTED
 		pass
 	
-	def path_euler():
-		pass
+	def eulerian_path(self): # NOT READY!
+		dim = self.__matrix.get_dim()
+		if not self.connected():
+			return None
+		
+		oddCounter = []
+		for i in range(dim):
+			if self.degree(i)%2 == 1:
+				oddCounter.append(i)
+		
+		if len(oddCounter) != 0 and len(oddCounter) != 2:
+			return None
+		
+		if len(oddCounter) == 2:
+			if self.degree(oddCounter[0]) > self.degree(oddCounter[1]):
+				start = oddCounter[0]
+			else:
+				start = oddCounter[1]
+		if len(oddCounter) == 0:
+			start = 0
+		
+		return self.__fleury_algorithm(start)
 
 # Esto es para probar el algoritmo
 
-g = Graph()
-g.add_node()
-g.add_node()
-g.add_node()
-g.add_node()
-g.change_relation(0,1,7)
-g.change_relation(1,0,7)
-g.change_relation(2,3,5)
-g.change_relation(3,2,5)
+g = Graph(4)
+g.change_relation(0,1,1)
+g.change_relation(0,2,1)
+g.change_relation(1,0,1)
+g.change_relation(1,2,1)
+g.change_relation(2,0,1)
+g.change_relation(2,1,1)
+g.change_relation(2,3,1)
+g.change_relation(3,2,1)

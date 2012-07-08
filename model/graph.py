@@ -67,11 +67,11 @@ class Graph:
 		
 		finished = False
 		while not finished:
-			matrix = copy.copy(traveledEdges)
+			# crea una shallow copy de 'traveledEdges' en 'matrix'
+			matrix = []
+			for i in range(dim):
+				matrix.append( copy.copy(traveledEdges) )
 			print 'origin ', origin
-#			print 'self matrix', self.__matrix.get_matrix()
-#			print 'traveledEdges ', traveledEdges
-#			print 'matrix ', matrix
 			raw_input()
 			for i in range(dim):
 				if matrix[origin][i] == 0:

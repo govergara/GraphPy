@@ -33,19 +33,24 @@ class Matrix:
 	
 	def get_matrix(self):
 		"""Retorna una copia 'superficial' (por valor) de la matriz"""
-		matrix = copy.copy(self.__matrix)
+		dim = self.get_dim()
+		matrix = []
+		for i in range(dim):
+			temp = copy.copy(self.__matrix[i])
+			matrix.append(temp)
 		return matrix
 	
 	def add_entry(self):
 		"""Agrega los datos de un nodo (nueva fila y columna)
 		Retorna la nueva dimension de la matriz"""
 		try:
+			dim = self.get_dim()
 			new = []
-			for i in range(self.__dimMatrix):
+			for i in range(dim):
 				new.append(0)
 			self.__matrix.append(new)
 			self.__dimMatrix += 1
-			for i in range(self.__dimMatrix):
+			for i in range(dim):
 				self.__matrix[i].append(0)
 		except:
 			return False
@@ -56,10 +61,11 @@ class Matrix:
 		Elimina los datos de un nodo (fila & columna respectiva)
 		Retorna la nueva dimension de la matriz"""
 		try:
+			dim = self.get_dim()
 			self.__matrix.pop(target)
-			for i in range(self.__dimMatrix - 1):
-				self.__matrix[i].pop(target)
 			self.__dimMatrix -= 1
+			for i in range(dim):
+				self.__matrix[i].pop(target)
 		except:
 			return False
 		return True
@@ -71,7 +77,7 @@ class Matrix:
 	def symmetry(self):
 		"""Determina si la matriz es simetrica o no
 		Retorna 'True' si es simetrica, 'False' si no lo es"""
-		dim = self.__dimMatrix
+		dim = self.get_dim()
 		for i in range(dim):
 			for j in range(dim):
 				if j <= i:
@@ -81,7 +87,7 @@ class Matrix:
 		return True
 	
 	def num_relations(self, entry):
-		dim = self.__dimMatrix
+		dim = self.get_dim()
 		relations = 0
 		for i in range(dim):
 			if self.__matrix[entry][i] != 0:

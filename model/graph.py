@@ -59,7 +59,7 @@ class Graph:
 			origin = menor
 		return status
 	
-	def __fleury_algorithm(self, origin): # ERROR FATAL! Edición de self.__matrix
+	def __fleury_algorithm(self, origin):
 		dim = self.__matrix.get_dim()
 		traveledEdges = self.__matrix.get_matrix()
 		path = []
@@ -67,17 +67,17 @@ class Graph:
 		
 		finished = False
 		while not finished:
-			# crea una shallow copy de 'traveledEdges' en 'matrix'
+			# crea una copia superficial de 'traveledEdges' en 'matrix'
 			matrix = []
 			for i in range(dim):
-				matrix.append( copy.copy(traveledEdges) )
-			print 'origin ', origin
-			raw_input()
+				matrix.append( copy.copy(traveledEdges[i]) )
+			# terminada la copia
+			
 			for i in range(dim):
 				if matrix[origin][i] == 0:
 					continue
 				candidate = i
-				matrix[origin][i] = 0 # MODIFICA TODAS LAS MATRICES!
+				matrix[origin][i] = 0
 				data = self.__breadthfirst_search(matrix, origin)
 				connected = 1
 				# connected: 1, es conexo
@@ -90,10 +90,8 @@ class Graph:
 					break
 			
 			if self.directed():
-				print 'Entre al if!'
 				traveledEdges[origin][candidate] = 0
 			else:
-				print 'Entre al else!'
 				traveledEdges[origin][candidate] = 0
 				traveledEdges[candidate][origin] = 0
 			
@@ -238,6 +236,7 @@ class Graph:
 				start = oddCounter[1]
 		if len(oddCounter) == 0:
 			start = 0
+		
 		return self.__fleury_algorithm(start)
 
 # Instrucciones para probar el algoritmo

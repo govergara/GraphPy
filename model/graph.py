@@ -59,7 +59,28 @@ class Graph:
 			origin = menor
 		return status
 	
+	def __get_path(self, status, target):
+		"""Para un nodo 'target' y un resultado de __breadthfirst_search 'status':
+		Guarda el menor camino recorrido para llegar a 'target' en 'path'
+		Retorna el camino si 'target' existe, 'None' en otro caso"""
+		if not self.__validate_target(target):
+			return None
+		if status[target]['from'] == -1:
+			return None
+		path = []
+		temp = target
+		while True: # almacena los nodos en orden inverso
+			path.append(temp)
+			temp = status[temp]['from']
+			if temp == -1:
+				break
+		path.reverse() # revierte el orden de los nodos
+		return path
+	
 	def __fleury_algorithm(self, origin):
+		"""Para un nodo 'origin':
+		Determina, aplicando el Algoritmo de Fleury, un camino euleriano del grafo
+		Retorna el camino euleriano encontrado (lista de nodos)"""
 		dim = self.__matrix.get_dim()
 		traveledEdges = self.__matrix.get_matrix()
 		path = []
@@ -204,12 +225,16 @@ class Graph:
 		Determina el camino mas corto desde 'origin' a cualquier nodo
 		Retorna 'None' si el nodo es invalido
 		Retorna la lista del metodo '__breadthfirst_search' en otro caso"""
-		if self.__validate_target(origin):
-			matrix = self.__matrix.get_matrix()
-			roads = self.__breadthfirst_search(matrix, origin)
-			# insertar interpretacion de dijkstra
-			return roads
-		return None
+		if not self.__validate_target(origin):
+			return None
+		dim = self.__matrix.get_dim()
+		matrix = self.__matrix.get_matrix()
+		roads = self.__breadthfirst_search(matrix, origin)
+		paths = []
+		for i in range(dim):
+			temp = self.__get_path(roads, i)
+			paths.append(temp)
+		return paths
 	
 	def kruskal(self): # NOT IMPLEMENTED
 		pass
@@ -217,7 +242,9 @@ class Graph:
 	def hamiltonian_path(): # NOT IMPLEMENTED
 		pass
 	
-	def eulerian_path(self): # NOT READY
+	def eulerian_path(self):
+		"""Determina un camino/ciclo euleriano, en caso de que exista
+		Retorna 'None' si no existe. Retorna el resultado de __fleury_algorithm en otro caso"""
 		dim = self.__matrix.get_dim()
 		if not self.connected():
 			return None

@@ -59,44 +59,43 @@ class Graph:
 			origin = menor
 		return status
 	
-	def __fleury_algorithm(self, origin): # no funciona este csm!
+	def __fleury_algorithm(self, origin): # ERROR FATAL! Edición de self.__matrix
 		dim = self.__matrix.get_dim()
 		traveledEdges = self.__matrix.get_matrix()
 		path = []
 		path.append(origin)
-				
-		while True:
+		
+		finished = False
+		while not finished:
 			matrix = copy.copy(traveledEdges)
 			print 'origin ', origin
-			print 'self matrix', self.__matrix.get_matrix()
-			print 'traveledEdges ', traveledEdges
-			print 'matrix ', matrix
+#			print 'self matrix', self.__matrix.get_matrix()
+#			print 'traveledEdges ', traveledEdges
+#			print 'matrix ', matrix
 			raw_input()
-			connected = 0
 			for i in range(dim):
-				if matrix[origin][i] != 0:
-					candidate = i
-					# candidate es la arista 'candidata' a ser utilizada
-					matrix[origin][i] = 0
-					data = self.__breadthfirst_search(matrix, origin)
-					connected = 1
-					# connected: 1, es conexo
-					# connected: 0, no es conexo
-					for j in range(dim):
-						if data[j]['set'] == 0:
-							connected = 0
-							break
+				if matrix[origin][i] == 0:
+					continue
+				candidate = i
+				matrix[origin][i] = 0 # MODIFICA TODAS LAS MATRICES!
+				data = self.__breadthfirst_search(matrix, origin)
+				connected = 1
+				# connected: 1, es conexo
+				# connected: 0, no es conexo
+				for j in range(dim):
+					if data[j]['set'] == 0:
+						connected = 0
+						break
 				if connected == 1:
 					break
+			
 			if self.directed():
 				print 'Entre al if!'
 				traveledEdges[origin][candidate] = 0
-				print 'Borre!'
 			else:
 				print 'Entre al else!'
 				traveledEdges[origin][candidate] = 0
 				traveledEdges[candidate][origin] = 0
-				print 'Borre!'
 			
 			origin = candidate
 			finished = True
@@ -106,8 +105,6 @@ class Graph:
 				for j in range(dim):
 					if traveledEdges[i][j] != 0:
 						finished = False
-			if finished:
-				break
 		return path
 	
 	#
@@ -143,8 +140,10 @@ class Graph:
 	
 	def directed(self):
 		"""Determina si el grafo es dirigido o no dirigido
-		Retorna el valor del metodo 'symmetry' de la matriz asociada"""
-		return not self.__matrix.symmetry()
+		Retorna 'True' si es dirigido, 'False' si no lo es"""
+		if self.__matrix.symmetry(): # Comprueba si la matriz es simetrica
+			return False # Si es simetrica, entonces el grafo no es dirigido
+		return True # Si no es simetrica, entonces el grafo es dirigido
 	
 	def connected(self):
 		"""Determina, utilizando Dijkstra, si el grafo es conexo o no
@@ -220,7 +219,7 @@ class Graph:
 	def hamiltonian_path(): # NOT IMPLEMENTED
 		pass
 	
-	def eulerian_path(self): # NOT READY!
+	def eulerian_path(self): # NOT READY
 		dim = self.__matrix.get_dim()
 		if not self.connected():
 			return None
@@ -232,7 +231,6 @@ class Graph:
 		
 		if len(oddCounter) != 0 and len(oddCounter) != 2:
 			return None
-		
 		if len(oddCounter) == 2:
 			if self.degree(oddCounter[0]) > self.degree(oddCounter[1]):
 				start = oddCounter[0]
@@ -240,10 +238,9 @@ class Graph:
 				start = oddCounter[1]
 		if len(oddCounter) == 0:
 			start = 0
-		
 		return self.__fleury_algorithm(start)
 
-# Esto es para probar el algoritmo
+# Instrucciones para probar el algoritmo
 
 g = Graph(4)
 g.change_relation(0,1,1)

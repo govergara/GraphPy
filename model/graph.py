@@ -1,5 +1,6 @@
+import copy		# Para hacer copias superficiales (shallow copies)
+import itertools	# Realizar permutaciones (permutations)
 import matrix
-import copy	# Para hacer copias superficiales (shallow copies)
 
 class Graph:
 	"""Clase que representa un grafo en un determinado momento
@@ -20,8 +21,19 @@ class Graph:
 		dim = self.__matrix.get_dim()
 		if target >= 0 and target < dim:
 			return True
-		print "Invalid Target!"
 		return False
+	
+	def __connected_matrix(self, matrix):
+		"""Para una matriz 'matrix':
+		Determina, utilizando Busqueda en Profundidad, si el grafo es conexo o no
+		Retorna 'True' si es conexo, 'False' si no lo es"""
+		dim = len(matrix)
+		for i in range(dim):
+			tester = self.__breadthfirst_search(matrix, i)
+			for j in range(dim):
+				if tester[j]['set'] == 0:
+					return False
+		return True
 	
 	def __breadthfirst_search(self, matrix, origin):
 		"""Para una matriz 'matrix' y un nodo 'origin':
@@ -82,7 +94,7 @@ class Graph:
 		Determina, aplicando el Algoritmo de Fleury, un camino euleriano del grafo
 		Retorna el camino euleriano encontrado (lista de nodos)"""
 		dim = self.__matrix.get_dim()
-		traveledEdges = self.__matrix.get_matrix()
+		traveledEdges = self.get_matrix()
 		path = []
 		path.append(origin)
 		
@@ -116,15 +128,56 @@ class Graph:
 				traveledEdges[origin][candidate] = 0
 				traveledEdges[candidate][origin] = 0
 			
+			if origin == candidate:
+				# 'origin' sera igual a 'candidate' solo si
+				# 'origin' no tiene conexiones. Si eso pasa,
+				# no existe camino
+				return None
+			
 			origin = candidate
 			finished = True
-			path.append(origin)
 			
 			for i in range(dim):
 				for j in range(dim):
 					if traveledEdges[i][j] != 0:
 						finished = False
+			path.append(origin)
+		
 		return path
+	
+	def __kruskal_algorithm(self):
+		# llamar a funcion utilizada en __hamiltonian_path()
+		pass
+	
+	def __hamilton_algorithm(self, pivot):
+		matrix = self.get_matrix()
+		dim = self.__matrix.get_dim()
+		nodes = []
+		for i in range(dim):
+			if i == pivot:
+				continue
+			nodes.append(i)
+		permut = []
+		for i in itertools.permutations(nodes):
+			permut.append(i)
+		for i in range( len(permut) ):
+			actual = pivot
+			next = permut[i][0]
+			count = 0
+			path = [actual]
+			unconnected = 0
+			for j in range(dim - 2):
+				if matrix[actual][next] == 0:
+					unconnected = 1
+				actual = permut[i][j]
+				next = permut[i][j + 1]
+				path.append(actual)
+			path.append(next)
+			if unconnected == 0:
+				return path
+		return None
+				
+					
 	
 	#
 	#  PUBLIC METHODS - BASIC FUNCTIONALITY
@@ -165,16 +218,10 @@ class Graph:
 		return True # Si no es simetrica, entonces el grafo es dirigido
 	
 	def connected(self):
-		"""Determina, utilizando Dijkstra, si el grafo es conexo o no
+		"""Determina, utilizando Busqueda en Profundidad, si el grafo es conexo o no
 		Retorna 'True' si es conexo, 'False' si no lo es"""
-		dim = self.__matrix.get_dim()
-		matrix = self.__matrix.get_matrix()
-		for i in range(dim):
-			tester = self.__breadthfirst_search(matrix, i)
-			for j in range(dim):
-				if tester[j]['set'] == 0:
-					return False
-		return True
+		matrix = self.get_matrix()
+		return self.__connected_matrix(matrix)
 	
 	def complete(self):
 		"""Determina si el grafo es completo o no
@@ -190,7 +237,7 @@ class Graph:
 		Retorna 'True' si es bipartito, 'False' si no lo es"""
 		color1 = 1
 		color2 = 2
-		matrix = self.__matrix.get_matrix()
+		matrix = self.get_matrix()
 		dim = self.__matrix.get_dim()
 		colored = []
 		for i in range(dim):
@@ -228,7 +275,7 @@ class Graph:
 		if not self.__validate_target(origin):
 			return None
 		dim = self.__matrix.get_dim()
-		matrix = self.__matrix.get_matrix()
+		matrix = self.get_matrix()
 		roads = self.__breadthfirst_search(matrix, origin)
 		paths = []
 		for i in range(dim):
@@ -236,11 +283,21 @@ class Graph:
 			paths.append(temp)
 		return paths
 	
-	def kruskal(self): # NOT IMPLEMENTED
+	def kruskal(self):
 		pass
 	
-	def hamiltonian_path(): # NOT IMPLEMENTED
-		pass
+	def hamiltonian_path(self):
+		dim = self.__matrix.get_dim()
+		if not self.connected():
+			return None
+		
+		minDegree = self.degree(0)
+		node = 0
+		for i in range(dim):
+			if self.degree(i) < minDegree:
+				minDegree = self.degree(i)
+				node = i
+		return self.__hamilton_algorithm(node)
 	
 	def eulerian_path(self):
 		"""Determina un camino/ciclo euleriano, en caso de que exista
@@ -269,11 +326,11 @@ class Graph:
 # Instrucciones para probar el algoritmo
 
 g = Graph(4)
-g.change_relation(0,1,1)
-g.change_relation(0,2,1)
-g.change_relation(1,0,1)
-g.change_relation(1,2,1)
-g.change_relation(2,0,1)
-g.change_relation(2,1,1)
+g.change_relation(0,1,3)
+g.change_relation(0,2,4)
+g.change_relation(1,0,3)
+g.change_relation(1,2,2)
+g.change_relation(2,0,4)
+g.change_relation(2,1,2)
 g.change_relation(2,3,1)
 g.change_relation(3,2,1)

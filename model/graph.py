@@ -1,12 +1,14 @@
+import copy		# Para hacer copias superficiales (shallow copies)
+import itertools	# Realizar permutaciones (permutations)
 import matrix
 
 class Graph:
 	"""Clase que representa un grafo en un determinado momento
 	Utiliza la Matriz de Adyacencia/Incidencia"""
 	
-	def __init__(self):
-		self.__matrix = Matrix(0)
-		self.__nodes = 0
+	def __init__(self, nodes):
+		self.__matrix = Matrix(nodes)
+		self.__nodes = nodes
 	
 	#
 	#  PRIVATE METHODS
@@ -19,8 +21,259 @@ class Graph:
 		dim = self.__matrix.get_dim()
 		if target >= 0 and target < dim:
 			return True
-		print "Invalid Target!"
 		return False
+	
+	def __connected_matrix(self, matrix):
+		"""Para una matriz 'matrix':
+		Determina, utilizando Busqueda en Profundidad, si el grafo es conexo o no
+		Retorna 'True' si es conexo, 'False' si no lo es"""
+		dim = len(matrix)
+		for i in range(dim):
+			tester = self.__breadthfirst_search(matrix, i)
+			for j in range(dim):
+				if tester[j]['set'] == 0:
+					return False
+		return True
+	
+	def __breadthfirst_search(self, matrix, origin):
+		"""Para una matriz 'matrix' y un nodo 'origin':
+		Realiza una busqueda en anchura
+		Retorna una lista de diccionarios con la informacion recopilada"""
+		status = []
+		dim = len(matrix)
+		for i in range(dim):
+			data = {'dist': -1, 'from': -1, 'set': 0}
+			#  'dist': distancia acumulada, (-1) representa distancia infinita
+			#  'from': nodo del que proviene la distancia menor, (-1) indica sin origen
+			#  'set': (0) no visitado, (1) visitado como "destino", (2) utilizado como origen
+			if i == origin:
+				data['dist'] = 0
+			status.append(data)
+		for i in range(dim):
+			for j in range(dim):
+				status[origin]['set'] = 2
+				if matrix[origin][j] != 0:
+					accumulated = matrix[origin][j] + status[origin]['dist']
+					if status[j]['set'] == 0:
+						status[j]['dist'] = accumulated
+						status[j]['from'] = origin
+						status[j]['set'] = 1
+					elif status[j]['set'] == 1 and accumulated < status[j]['dist']:
+						status[j]['dist'] = accumulated
+						status[j]['from'] = origin
+			menor = -1
+			for j in range(dim):
+				if status[j]['set'] == 1:
+					if menor == -1 and status[j]['dist'] > 0:
+						menor = j
+					elif status[j]['dist'] < status[menor]['dist']:
+						menor = j
+			origin = menor
+		return status
+	
+	def __get_path(self, status, target):
+		"""Para un nodo 'target' y un resultado de __breadthfirst_search 'status':
+		Guarda el menor camino recorrido para llegar a 'target' en 'path'
+		Retorna el camino si 'target' existe, 'None' en otro caso"""
+		if not self.__validate_target(target):
+			return None
+		if status[target]['from'] == -1:
+			return None
+		path = []
+		temp = target
+		while True: # almacena los nodos en orden inverso
+			path.append(temp)
+			temp = status[temp]['from']
+			if temp == -1:
+				break
+		path.reverse() # revierte el orden de los nodos
+		return path
+	
+	def __fleury_algorithm(self, origin):
+		"""Para un nodo 'origin':
+		Determina, aplicando el Algoritmo de Fleury, un camino euleriano del grafo
+		Retorna el camino euleriano encontrado (lista de nodos), o 'None' si no existe"""
+		dim = self.__matrix.get_dim()
+		traveledEdges = self.get_matrix()
+		path = []
+		path.append(origin)
+		
+		finished = False
+		while not finished:
+			# crea una copia superficial de 'traveledEdges' en 'matrix'
+			matrix = []
+			for i in range(dim):
+				matrix.append( copy.copy(traveledEdges[i]) )
+			# terminada la copia
+			
+			for i in range(dim):
+				if matrix[origin][i] == 0:
+					continue
+				candidate = i
+				matrix[origin][i] = 0
+				data = self.__breadthfirst_search(matrix, origin)
+				connected = 1
+				# connected: 1, es conexo
+				# connected: 0, no es conexo
+				for j in range(dim):
+					if data[j]['set'] == 0:
+						connected = 0
+						break
+				if connected == 1:
+					break
+			
+			if self.directed():
+				traveledEdges[origin][candidate] = 0
+			else:
+				traveledEdges[origin][candidate] = 0
+				traveledEdges[candidate][origin] = 0
+			
+			if origin == candidate:
+				# 'origin' sera igual a 'candidate' solo si
+				# 'origin' no tiene conexiones. Si eso pasa,
+				# no existe camino
+				return None
+			
+			origin = candidate
+			finished = True
+			
+			for i in range(dim):
+				for j in range(dim):
+					if traveledEdges[i][j] != 0:
+						finished = False
+			path.append(origin)
+		
+		return path
+	
+	def __cicle(self, begin, father, actual, matrix):
+		"""Para un nodo a analizar 'begin'
+		Un padre temporal 'father'
+		Un actual temporal 'actual'
+		Y una matriz 'matrix'
+		Determina recursivamente si existe algun ciclo
+		Retorna 'True' si existe un ciclo, 'False' si no existe"""
+		for i in range( len(matrix) ):
+			if i==father:
+				# no consulta por el nodo 'father', para no regresar
+				continue
+			if begin != father and matrix[actual][begin] != 0:
+				return True
+			if matrix[actual][i] != 0:
+				return self.__cicle(begin, actual, i, matrix)
+		return False
+	
+	def __kruskal_algorithm(self, matrix):
+		"""Para una matriz 'matrix':
+		Obtiene el arbol recubridor minimo
+		Retorna la matriz asociada al arbol, 'None' si no encuentra un arbol"""
+		dim = len(matrix)
+		
+		kruskal = []
+		for i in range(dim):
+			kruskal.append([])
+			for j in range(dim):
+				kruskal[i].append(0)
+		traveled = []
+		
+		while len(traveled) != dim or not self.__connected_matrix(kruskal):
+			# Obtener la arista menor en 'smaller'
+			smaller = 0
+			row = -1
+			col = -1
+			for i in range(dim):
+				for j in range(dim):
+					if matrix[i][j] != 0:
+						if smaller == 0:
+							row = i
+							col = j
+							smaller = matrix[i][j]
+						elif smaller > matrix[i][j]:
+							row = i
+							col = j
+							smaller = matrix[i][j]
+			if smaller == 0:
+				return None
+			
+			# revisa los nodos adyacentes a la arista 'smaller'
+			adjacent = 0
+			for i in range( len(traveled) ):
+				if traveled[i] == row:
+					adjacent += 1
+				if traveled[i] == col:
+					adjacent += 2
+			
+			# agrega los adyacentes no agregados a traveled
+			if adjacent == 0 or adjacent == 2:
+				traveled.append(row)
+			if adjacent == 0 or adjacent == 1:
+				traveled.append(col)
+			
+			# diferencia si es dirigido o no
+			if self.directed():
+				# se elimina la arista de 'matrix'
+				matrix[row][col] = 0
+				# se agrega la arista a 'kruskal'
+				kruskal[row][col] = smaller
+				# si agregando la arista se forma un ciclo, deshace
+				if self.__cicle(col, col, col, kruskal):
+					kruskal[row][col] = 0
+			else:
+				# se elimina la arista bidireccional de 'matrix'
+				matrix[row][col] = 0
+				matrix[col][row] = 0
+				# se agrega la arista bidireccional a 'kruskal'
+				kruskal[row][col] = smaller
+				kruskal[col][row] = smaller
+				# si agregando la arista bidireccional se forma un ciclo, deshace
+				if self.__cicle(col, col, col, kruskal):
+					kruskal[row][col] = 0
+					kruskal[col][row] = 0
+				if self.__cicle(row, row, row, kruskal):
+					kruskal[row][col] = 0
+					kruskal[col][row] = 0
+		return kruskal
+	
+	def __hamilton_algorithm(self, pivot, matrix):
+		"""Para un nodo origen 'pivot', y una matriz 'matrix':
+		Determina un recorrido para todos los nodos, sin repetirlos
+		Retorna el camino encontrado, 'None' si no encuentra uno"""
+		dim = self.__matrix.get_dim()
+		nodes = []
+		for i in range(dim):
+			if i == pivot:
+				continue
+			nodes.append(i)
+		permut = []
+		for i in itertools.permutations(nodes):
+			permut.append(i)
+		for i in range( len(permut) ):
+			actual = pivot
+			next = permut[i][0]
+			count = 0
+			path = [actual]
+			unconnected = 0
+			for j in range(dim - 2):
+				if matrix[actual][next] == 0:
+					unconnected = 1
+				actual = permut[i][j]
+				next = permut[i][j + 1]
+				path.append(actual)
+			path.append(next)
+			if unconnected == 0:
+				return path
+		return None
+	
+	def __generic_degree(self, node, matrix):
+		"""Para un nodo 'node', y una matriz 'matrix':
+		Determina el grado de 'node'
+		Retorna el grado, o'None' si 'node' no existe"""
+		if not self.__validate_target(node):
+			return None
+		degree = 0
+		for i in range( len(matrix) ):
+			if matrix[node][i] != 0:
+				degree += 1
+		return degree
 	
 	#
 	#  PUBLIC METHODS - BASIC FUNCTIONALITY
@@ -55,19 +308,16 @@ class Graph:
 	
 	def directed(self):
 		"""Determina si el grafo es dirigido o no dirigido
-		Retorna el valor del metodo 'symmetry' de la matriz asociada"""
-		return self.__matrix.symmetry()
+		Retorna 'True' si es dirigido, 'False' si no lo es"""
+		if self.__matrix.symmetry(): # Comprueba si la matriz es simetrica
+			return False # Si es simetrica, entonces el grafo no es dirigido
+		return True # Si no es simetrica, entonces el grafo es dirigido
 	
 	def connected(self):
-		"""Determina, utilizando Dijkstra, si el grafo es conexo o no
+		"""Determina, utilizando Busqueda en Profundidad, si el grafo es conexo o no
 		Retorna 'True' si es conexo, 'False' si no lo es"""
-		dim = self.__matrix.get_dim()
-		for i in range(dim):
-			tester = self.dijkstra(i)
-			for j in range(dim):
-				if tester[j]['set'] == 0:
-					return False
-		return True
+		matrix = self.get_matrix()
+		return self.__connected_matrix(matrix)
 	
 	def complete(self):
 		"""Determina si el grafo es completo o no
@@ -83,7 +333,7 @@ class Graph:
 		Retorna 'True' si es bipartito, 'False' si no lo es"""
 		color1 = 1
 		color2 = 2
-		matrix = self.__matrix.get_matrix()
+		matrix = self.get_matrix()
 		dim = self.__matrix.get_dim()
 		colored = []
 		for i in range(dim):
@@ -104,10 +354,9 @@ class Graph:
 	
 	def degree(self, node):
 		"""Para un nodo 'node':
-		Retorna el grado del nodo"""
-		if self.__validate_target(node):
-			return self.__matrix.num_relations(node)
-		return 
+		Retorna el grado del nodo. Si 'node' no es valido, retorna 'None'"""
+		matrix = self.get_matrix()
+		return self.__generic_degree(node, matrix)
 	
 	#
 	#  PUBLIC METHODS - GRAPH ALGORITHMS
@@ -115,54 +364,74 @@ class Graph:
 	
 	def dijkstra(self, origin):
 		"""Para un nodo 'origin':
-		Determina el camino mas corto desde 'origin' al resto de los nodos
-		Retorna una lista de diccionarios con los datos de Dijkstra"""
-		roads = []
+		Determina el camino mas corto desde 'origin' a cualquier nodo
+		Retorna 'None' si el nodo es invalido
+		Retorna la lista del metodo '__breadthfirst_search' en otro caso"""
+		if not self.__validate_target(origin):
+			return None
 		dim = self.__matrix.get_dim()
-		matrix = self.__matrix.get_matrix()
+		matrix = self.get_matrix()
+		roads = self.__breadthfirst_search(matrix, origin)
+		paths = []
 		for i in range(dim):
-			data = {'dist': -1, 'from': -1, 'set': 0}
-			#  'dist': distancia acumulada, (-1) representa distancia infinita
-			#  'from': nodo del que proviene la distancia menor, (-1) indica sin origen
-			#  'set': (0) no visitado, (1) visitado como "destino", (2) utilizado como origen
-			if i == origin:
-				data['dist'] = 0
-			roads.append(data)
-		for i in range(dim):
-			for j in range(dim):
-				roads[origin]['set'] = 2
-				if matrix[origin][j] != 0:
-					accumulated = matrix[origin][j] + roads[origin]['dist']
-					if roads[j]['set'] == 0:
-						roads[j]['dist'] = accumulated
-						roads[j]['from'] = origin
-						roads[j]['set'] = 1
-					elif roads[j]['set'] == 1 and accumulated < roads[j]['dist']:
-						roads[j]['dist'] = accumulated
-						roads[j]['from'] = origin
-			menor = -1
-			for j in range(dim):
-				if roads[j]['set'] == 1:
-					if menor == -1 and roads[j]['dist'] > 0:
-						menor = j
-					elif roads[j]['dist'] < roads[menor]['dist']:
-						menor = j
-			origin = menor
-		return roads
+			temp = self.__get_path(roads, i)
+			paths.append(temp)
+		return paths
 	
 	def kruskal(self):
-		pass
+		"""Determina un arbol recubridor minimo
+		Retorna la matriz del arbol"""
+		matrix = self.get_matrix()
+		return self.__kruskal_algorithm(matrix)
 	
-	def path_hamilton():
-		pass
+	def hamiltonian_path(self):
+		"""Determina un camino que recorre todos los nodos
+		Retorna el camino"""
+		matrix = self.get_matrix()
+		dim = self.__matrix.get_dim()
+		if not self.connected():
+			return None
+		
+		minDegree = self.degree(0)
+		node = 0
+		for i in range(dim):
+			if self.degree(i) < minDegree:
+				minDegree = self.degree(i)
+				node = i
+		return self.__hamilton_algorithm(node, matrix)
 	
-	def path_euler():
-		pass
+	def eulerian_path(self):
+		"""Determina un camino/ciclo euleriano, en caso de que exista
+		Retorna 'None' si no existe. Retorna el resultado de __fleury_algorithm en otro caso"""
+		dim = self.__matrix.get_dim()
+		if not self.connected():
+			return None
+		
+		oddCounter = []
+		for i in range(dim):
+			if self.degree(i)%2 == 1:
+				oddCounter.append(i)
+		
+		if len(oddCounter) != 0 and len(oddCounter) != 2:
+			return None
+		if len(oddCounter) == 2:
+			if self.degree(oddCounter[0]) > self.degree(oddCounter[1]):
+				start = oddCounter[0]
+			else:
+				start = oddCounter[1]
+		if len(oddCounter) == 0:
+			start = 0
+		
+		return self.__fleury_algorithm(start)
 
-# Esto es para probar el algoritmo
+# Instrucciones para probar el algoritmo
 
-g = Graph()
-g.add_node()
-g.add_node()
-g.change_relation(0,1,7)
-g.change_relation(1,0,7)
+g = Graph(4)
+g.change_relation(0,1,3)
+g.change_relation(0,2,4)
+g.change_relation(1,0,3)
+g.change_relation(1,2,2)
+g.change_relation(2,0,4)
+g.change_relation(2,1,2)
+g.change_relation(2,3,1)
+g.change_relation(3,2,1)

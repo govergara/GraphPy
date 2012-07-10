@@ -85,11 +85,3 @@ class Matrix:
 				if self.__matrix[i][j] != self.__matrix[j][i]:
 					return False
 		return True
-	
-	def num_relations(self, entry):
-		dim = self.get_dim()
-		relations = 0
-		for i in range(dim):
-			if self.__matrix[entry][i] != 0:
-				relations += 1
-		return relations

@@ -92,7 +92,7 @@ class Graph:
 	def __fleury_algorithm(self, origin):
 		"""Para un nodo 'origin':
 		Determina, aplicando el Algoritmo de Fleury, un camino euleriano del grafo
-		Retorna el camino euleriano encontrado (lista de nodos)"""
+		Retorna el camino euleriano encontrado (lista de nodos), o 'None' si no existe"""
 		dim = self.__matrix.get_dim()
 		traveledEdges = self.get_matrix()
 		path = []
@@ -145,12 +145,98 @@ class Graph:
 		
 		return path
 	
-	def __kruskal_algorithm(self):
-		# llamar a funcion utilizada en __hamiltonian_path()
-		pass
+	def __cicle(self, begin, father, actual, matrix):
+		"""Para un nodo a analizar 'begin'
+		Un padre temporal 'father'
+		Un actual temporal 'actual'
+		Y una matriz 'matrix'
+		Determina recursivamente si existe algun ciclo
+		Retorna 'True' si existe un ciclo, 'False' si no existe"""
+		for i in range( len(matrix) ):
+			if i==father:
+				# no consulta por el nodo 'father', para no regresar
+				continue
+			if begin != father and matrix[actual][begin] != 0:
+				return True
+			if matrix[actual][i] != 0:
+				return self.__cicle(begin, actual, i, matrix)
+		return False
 	
-	def __hamilton_algorithm(self, pivot):
-		matrix = self.get_matrix()
+	def __kruskal_algorithm(self, matrix):
+		"""Para una matriz 'matrix':
+		Obtiene el arbol recubridor minimo
+		Retorna la matriz asociada al arbol, 'None' si no encuentra un arbol"""
+		dim = len(matrix)
+		
+		kruskal = []
+		for i in range(dim):
+			kruskal.append([])
+			for j in range(dim):
+				kruskal[i].append(0)
+		traveled = []
+		
+		while len(traveled) != dim or not self.__connected_matrix(kruskal):
+			# Obtener la arista menor en 'smaller'
+			smaller = 0
+			row = -1
+			col = -1
+			for i in range(dim):
+				for j in range(dim):
+					if matrix[i][j] != 0:
+						if smaller == 0:
+							row = i
+							col = j
+							smaller = matrix[i][j]
+						elif smaller > matrix[i][j]:
+							row = i
+							col = j
+							smaller = matrix[i][j]
+			if smaller == 0:
+				return None
+			
+			# revisa los nodos adyacentes a la arista 'smaller'
+			adjacent = 0
+			for i in range( len(traveled) ):
+				if traveled[i] == row:
+					adjacent += 1
+				if traveled[i] == col:
+					adjacent += 2
+			
+			# agrega los adyacentes no agregados a traveled
+			if adjacent == 0 or adjacent == 2:
+				traveled.append(row)
+			if adjacent == 0 or adjacent == 1:
+				traveled.append(col)
+			
+			# diferencia si es dirigido o no
+			if self.directed():
+				# se elimina la arista de 'matrix'
+				matrix[row][col] = 0
+				# se agrega la arista a 'kruskal'
+				kruskal[row][col] = smaller
+				# si agregando la arista se forma un ciclo, deshace
+				if self.__cicle(col, col, col, kruskal):
+					kruskal[row][col] = 0
+			else:
+				# se elimina la arista bidireccional de 'matrix'
+				matrix[row][col] = 0
+				matrix[col][row] = 0
+				# se agrega la arista bidireccional a 'kruskal'
+				kruskal[row][col] = smaller
+				kruskal[col][row] = smaller
+				# si agregando la arista bidireccional se forma un ciclo, deshace
+				if self.__cicle(col, col, col, kruskal):
+					kruskal[row][col] = 0
+					kruskal[col][row] = 0
+				if self.__cicle(row, row, row, kruskal):
+					kruskal[row][col] = 0
+					kruskal[col][row] = 0
+		return kruskal
+	
+	def __hamilton_algorithm(self, pivot, matrix):
+		"""Para un nodo origen 'pivot', y una matriz 'matrix':
+		Determina un recorrido para todos los nodos, sin repetirlos
+		Retorna el camino encontrado, 'None' si no encuentra uno"""
 		dim = self.__matrix.get_dim()
 		nodes = []
 		for i in range(dim):
@@ -176,8 +262,18 @@ class Graph:
 			if unconnected == 0:
 				return path
 		return None
-				
-					
+	
+	def __generic_degree(self, node, matrix):
+		"""Para un nodo 'node', y una matriz 'matrix':
+		Determina el grado de 'node'
+		Retorna el grado, o'None' si 'node' no existe"""
+		if not self.__validate_target(node):
+			return None
+		degree = 0
+		for i in range( len(matrix) ):
+			if matrix[node][i] != 0:
+				degree += 1
+		return degree
 	
 	#
 	#  PUBLIC METHODS - BASIC FUNCTIONALITY
@@ -259,9 +355,8 @@ class Graph:
 	def degree(self, node):
 		"""Para un nodo 'node':
 		Retorna el grado del nodo. Si 'node' no es valido, retorna 'None'"""
-		if self.__validate_target(node):
-			return self.__matrix.num_relations(node)
-		return None
+		matrix = self.get_matrix()
+		return self.__generic_degree(node, matrix)
 	
 	#
 	#  PUBLIC METHODS - GRAPH ALGORITHMS
@@ -284,9 +379,15 @@ class Graph:
 		return paths
 	
 	def kruskal(self):
-		pass
+		"""Determina un arbol recubridor minimo
+		Retorna la matriz del arbol"""
+		matrix = self.get_matrix()
+		return self.__kruskal_algorithm(matrix)
 	
 	def hamiltonian_path(self):
+		"""Determina un camino que recorre todos los nodos
+		Retorna el camino"""
+		matrix = self.get_matrix()
 		dim = self.__matrix.get_dim()
 		if not self.connected():
 			return None
@@ -297,7 +398,7 @@ class Graph:
 			if self.degree(i) < minDegree:
 				minDegree = self.degree(i)
 				node = i
-		return self.__hamilton_algorithm(node)
+		return self.__hamilton_algorithm(node, matrix)
 	
 	def eulerian_path(self):
 		"""Determina un camino/ciclo euleriano, en caso de que exista

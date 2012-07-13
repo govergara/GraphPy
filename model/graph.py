@@ -1,5 +1,4 @@
 import copy		# Para hacer copias superficiales (shallow copies)
-import itertools	# Realizar permutaciones (permutations)
 import matrix
 
 class Graph:
@@ -100,26 +99,16 @@ class Graph:
 		
 		finished = False
 		while not finished:
-			# crea una copia superficial de 'traveledEdges' en 'matrix'
 			matrix = []
 			for i in range(dim):
 				matrix.append( copy.copy(traveledEdges[i]) )
-			# terminada la copia
 			
 			for i in range(dim):
 				if matrix[origin][i] == 0:
 					continue
 				candidate = i
 				matrix[origin][i] = 0
-				data = self.__breadthfirst_search(matrix, origin)
-				connected = 1
-				# connected: 1, es conexo
-				# connected: 0, no es conexo
-				for j in range(dim):
-					if data[j]['set'] == 0:
-						connected = 0
-						break
-				if connected == 1:
+				if self.__connected_matrix(matrix):
 					break
 			
 			if self.directed():
@@ -129,14 +118,10 @@ class Graph:
 				traveledEdges[candidate][origin] = 0
 			
 			if origin == candidate:
-				# 'origin' sera igual a 'candidate' solo si
-				# 'origin' no tiene conexiones. Si eso pasa,
-				# no existe camino
 				return None
 			
 			origin = candidate
 			finished = True
-			
 			for i in range(dim):
 				for j in range(dim):
 					if traveledEdges[i][j] != 0:
@@ -167,7 +152,6 @@ class Graph:
 		Obtiene el arbol recubridor minimo
 		Retorna la matriz asociada al arbol, 'None' si no encuentra un arbol"""
 		dim = len(matrix)
-		
 		kruskal = []
 		for i in range(dim):
 			kruskal.append([])
@@ -176,7 +160,6 @@ class Graph:
 		traveled = []
 		
 		while len(traveled) != dim or not self.__connected_matrix(kruskal):
-			# Obtener la arista menor en 'smaller'
 			smaller = 0
 			row = -1
 			col = -1
@@ -194,37 +177,21 @@ class Graph:
 			if smaller == 0:
 				return None
 			
-			# revisa los nodos adyacentes a la arista 'smaller'
-			adjacent = 0
-			for i in range( len(traveled) ):
-				if traveled[i] == row:
-					adjacent += 1
-				if traveled[i] == col:
-					adjacent += 2
-			
-			# agrega los adyacentes no agregados a traveled
-			if adjacent == 0 or adjacent == 2:
+			if traveled.count(row) == 0:
 				traveled.append(row)
-			if adjacent == 0 or adjacent == 1:
+			if traveled.count(col) == 0:
 				traveled.append(col)
 			
-			# diferencia si es dirigido o no
 			if self.directed():
-				# se elimina la arista de 'matrix'
 				matrix[row][col] = 0
-				# se agrega la arista a 'kruskal'
 				kruskal[row][col] = smaller
-				# si agregando la arista se forma un ciclo, deshace
 				if self.__cicle(col, col, col, kruskal):
 					kruskal[row][col] = 0
 			else:
-				# se elimina la arista bidireccional de 'matrix'
 				matrix[row][col] = 0
 				matrix[col][row] = 0
-				# se agrega la arista bidireccional a 'kruskal'
 				kruskal[row][col] = smaller
 				kruskal[col][row] = smaller
-				# si agregando la arista bidireccional se forma un ciclo, deshace
 				if self.__cicle(col, col, col, kruskal):
 					kruskal[row][col] = 0
 					kruskal[col][row] = 0
@@ -233,35 +200,23 @@ class Graph:
 					kruskal[col][row] = 0
 		return kruskal
 	
-	def __hamilton_algorithm(self, pivot, matrix):
+	def __hamilton_algorithm(self, actual, stack):
 		"""Para un nodo origen 'pivot', y una matriz 'matrix':
 		Determina un recorrido para todos los nodos, sin repetirlos
 		Retorna el camino encontrado, 'None' si no encuentra uno"""
+		stack.append(actual)
+		matrix = self.get_matrix()
 		dim = self.__matrix.get_dim()
-		nodes = []
+		if len(stack) == dim:
+			return True
 		for i in range(dim):
-			if i == pivot:
-				continue
-			nodes.append(i)
-		permut = []
-		for i in itertools.permutations(nodes):
-			permut.append(i)
-		for i in range( len(permut) ):
-			actual = pivot
-			next = permut[i][0]
-			count = 0
-			path = [actual]
-			unconnected = 0
-			for j in range(dim - 2):
-				if matrix[actual][next] == 0:
-					unconnected = 1
-				actual = permut[i][j]
-				next = permut[i][j + 1]
-				path.append(actual)
-			path.append(next)
-			if unconnected == 0:
-				return path
-		return None
+			if stack.count(i) == 0 and matrix[actual][i] != 0:
+				return self.__hamilton_algorithm(i, stack)
+		
+		if len(stack) < dim:
+			stack.pop()
+		if len(stack) == 0:
+			return False
 	
 	def __generic_degree(self, node, matrix):
 		"""Para un nodo 'node', y una matriz 'matrix':
@@ -309,9 +264,9 @@ class Graph:
 	def directed(self):
 		"""Determina si el grafo es dirigido o no dirigido
 		Retorna 'True' si es dirigido, 'False' si no lo es"""
-		if self.__matrix.symmetry(): # Comprueba si la matriz es simetrica
-			return False # Si es simetrica, entonces el grafo no es dirigido
-		return True # Si no es simetrica, entonces el grafo es dirigido
+		if self.__matrix.symmetry():
+			return False
+		return True
 	
 	def connected(self):
 		"""Determina, utilizando Busqueda en Profundidad, si el grafo es conexo o no
@@ -387,7 +342,6 @@ class Graph:
 	def hamiltonian_path(self):
 		"""Determina un camino que recorre todos los nodos
 		Retorna el camino"""
-		matrix = self.get_matrix()
 		dim = self.__matrix.get_dim()
 		if not self.connected():
 			return None
@@ -398,7 +352,10 @@ class Graph:
 			if self.degree(i) < minDegree:
 				minDegree = self.degree(i)
 				node = i
-		return self.__hamilton_algorithm(node, matrix)
+		path = []
+		if self.__hamilton_algorithm(node, path):
+			return path
+		return None
 	
 	def eulerian_path(self):
 		"""Determina un camino/ciclo euleriano, en caso de que exista
@@ -426,12 +383,16 @@ class Graph:
 
 # Instrucciones para probar el algoritmo
 
-g = Graph(4)
-g.change_relation(0,1,3)
-g.change_relation(0,2,4)
-g.change_relation(1,0,3)
-g.change_relation(1,2,2)
-g.change_relation(2,0,4)
-g.change_relation(2,1,2)
-g.change_relation(2,3,1)
-g.change_relation(3,2,1)
+g = Graph(5)
+g.change_relation(0,2,5)
+g.change_relation(0,3,6)
+g.change_relation(1,2,1)
+g.change_relation(1,4,2)
+g.change_relation(2,0,5)
+g.change_relation(2,1,1)
+g.change_relation(2,4,3)
+g.change_relation(3,0,6)
+g.change_relation(3,4,4)
+g.change_relation(4,1,2)
+g.change_relation(4,2,3)
+g.change_relation(4,3,4)

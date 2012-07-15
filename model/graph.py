@@ -382,7 +382,6 @@ class Graph:
 		return self.__fleury_algorithm(start)
 
 # Instrucciones para probar el algoritmo
-
 # g = Graph(5)
 # g.change_relation(0,2,5)
 # g.change_relation(0,3,6)

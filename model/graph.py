@@ -1,5 +1,5 @@
 import copy		# Para hacer copias superficiales (shallow copies)
-import matrix
+from matrix import *
 
 class Graph:
 	"""Clase que representa un grafo en un determinado momento
@@ -88,7 +88,74 @@ class Graph:
 		path.reverse() # revierte el orden de los nodos
 		return path
 	
-	def __fleury_algorithm(self, origin):
+	def __cicle(self, begin, matrix):
+		"""Para un nodo a analizar 'begin' y una matriz 'matrix'
+		Determina recursivamente si existe algun ciclo
+		Retorna 'True' si existe un ciclo, 'False' si no existe"""
+		father = begin
+		actual = begin
+		finished = False
+		while not finished:
+			for i in range( len(matrix) ):
+				if i == father:
+					continue
+				if begin != father and matrix[actual][begin] != 0:
+					return True
+				if matrix[actual][i] != 0:
+					father = actual
+					actual = i
+					break
+				finished = True
+		return False
+	
+	def __kruskal_algorithm(self, matrix):
+		"""Para una matriz 'matrix':
+		Obtiene el arbol recubridor minimo
+		Retorna la matriz asociada al arbol, 'None' si no encuentra un arbol"""
+		dim = len(matrix)
+		kruskal = []
+		for i in range(dim):
+			kruskal.append([])
+			for j in range(dim):
+				kruskal[i].append(0)
+		traveled = []
+		
+		while len(traveled) != dim or not self.__connected_matrix(kruskal):
+			smaller = 0
+			row = -1
+			col = -1
+			for i in range(dim):
+				for j in range(dim):
+					if matrix[i][j] != 0:
+						if smaller == 0:
+							row = i
+							col = j
+							smaller = matrix[i][j]
+						elif smaller > matrix[i][j]:
+							row = i
+							col = j
+							smaller = matrix[i][j]
+			if smaller == 0:
+				return None
+			
+			if traveled.count(row) == 0:
+				traveled.append(row)
+			if traveled.count(col) == 0:
+				traveled.append(col)
+			
+			matrix[row][col] = 0
+			matrix[col][row] = 0
+			kruskal[row][col] = smaller
+			kruskal[col][row] = smaller
+			if self.__cicle(col, kruskal):
+				kruskal[row][col] = 0
+				kruskal[col][row] = 0
+			if self.__cicle(row, kruskal):
+				kruskal[row][col] = 0
+				kruskal[col][row] = 0
+		return kruskal
+	
+	def __fleury_algorithm(self, origin): # implementar recorrido de varios caminos
 		"""Para un nodo 'origin':
 		Determina, aplicando el Algoritmo de Fleury, un camino euleriano del grafo
 		Retorna el camino euleriano encontrado (lista de nodos), o 'None' si no existe"""
@@ -130,93 +197,22 @@ class Graph:
 		
 		return path
 	
-	def __cicle(self, begin, father, actual, matrix):
-		"""Para un nodo a analizar 'begin'
-		Un padre temporal 'father'
-		Un actual temporal 'actual'
-		Y una matriz 'matrix'
-		Determina recursivamente si existe algun ciclo
-		Retorna 'True' si existe un ciclo, 'False' si no existe"""
-		for i in range( len(matrix) ):
-			if i==father:
-				# no consulta por el nodo 'father', para no regresar
-				continue
-			if begin != father and matrix[actual][begin] != 0:
-				return True
-			if matrix[actual][i] != 0:
-				return self.__cicle(begin, actual, i, matrix)
-		return False
-	
-	def __kruskal_algorithm(self, matrix):
-		"""Para una matriz 'matrix':
-		Obtiene el arbol recubridor minimo
-		Retorna la matriz asociada al arbol, 'None' si no encuentra un arbol"""
-		dim = len(matrix)
-		kruskal = []
-		for i in range(dim):
-			kruskal.append([])
-			for j in range(dim):
-				kruskal[i].append(0)
-		traveled = []
-		
-		while len(traveled) != dim or not self.__connected_matrix(kruskal):
-			smaller = 0
-			row = -1
-			col = -1
-			for i in range(dim):
-				for j in range(dim):
-					if matrix[i][j] != 0:
-						if smaller == 0:
-							row = i
-							col = j
-							smaller = matrix[i][j]
-						elif smaller > matrix[i][j]:
-							row = i
-							col = j
-							smaller = matrix[i][j]
-			if smaller == 0:
-				return None
-			
-			if traveled.count(row) == 0:
-				traveled.append(row)
-			if traveled.count(col) == 0:
-				traveled.append(col)
-			
-			if self.directed():
-				matrix[row][col] = 0
-				kruskal[row][col] = smaller
-				if self.__cicle(col, col, col, kruskal):
-					kruskal[row][col] = 0
-			else:
-				matrix[row][col] = 0
-				matrix[col][row] = 0
-				kruskal[row][col] = smaller
-				kruskal[col][row] = smaller
-				if self.__cicle(col, col, col, kruskal):
-					kruskal[row][col] = 0
-					kruskal[col][row] = 0
-				if self.__cicle(row, row, row, kruskal):
-					kruskal[row][col] = 0
-					kruskal[col][row] = 0
-		return kruskal
-	
-	def __hamilton_algorithm(self, actual, stack):
+	def __hamilton_algorithm(self, actual, stack, paths):
 		"""Para un nodo origen 'pivot', y una matriz 'matrix':
 		Determina un recorrido para todos los nodos, sin repetirlos
 		Retorna el camino encontrado, 'None' si no encuentra uno"""
-		stack.append(actual)
 		matrix = self.get_matrix()
 		dim = self.__matrix.get_dim()
+		stack.append(actual)
 		if len(stack) == dim:
-			return True
-		for i in range(dim):
-			if stack.count(i) == 0 and matrix[actual][i] != 0:
-				return self.__hamilton_algorithm(i, stack)
-		
-		if len(stack) < dim:
+			temp = copy.copy(stack)
+			paths.append(temp)
+		else:
+			for i in range(dim):
+				if stack.count(i) == 0 and matrix[actual][i] != 0:
+					self.__hamilton_algorithm(i, stack, paths)
+		if len(stack) <= dim:
 			stack.pop()
-		if len(stack) == 0:
-			return False
 	
 	def __generic_degree(self, node, matrix):
 		"""Para un nodo 'node', y una matriz 'matrix':
@@ -268,11 +264,22 @@ class Graph:
 			return False
 		return True
 	
-	def connected(self):
+	def connected(self): # implementar fuertemente conexo, debilmente conexo
 		"""Determina, utilizando Busqueda en Profundidad, si el grafo es conexo o no
 		Retorna 'True' si es conexo, 'False' si no lo es"""
 		matrix = self.get_matrix()
 		return self.__connected_matrix(matrix)
+	
+	def weighted(self):
+		"""Determina si el grafo es ponderado o no
+		Retorna 'True' si es ponderado, 'False' si no lo es"""
+		matrix = self.get_matrix()
+		dim = self.__matrix.get_dim()
+		for i in range(dim):
+			for j in range(dim):
+				if matrix[i][j] != 0 and matrix[i][j] != 1:
+					return True
+		return False
 	
 	def complete(self):
 		"""Determina si el grafo es completo o no
@@ -333,13 +340,15 @@ class Graph:
 			paths.append(temp)
 		return paths
 	
-	def kruskal(self):
+	def kruskal(self): # modificar matriz si es no-conexo
 		"""Determina un arbol recubridor minimo
 		Retorna la matriz del arbol"""
+		if self.directed():
+			return None
 		matrix = self.get_matrix()
 		return self.__kruskal_algorithm(matrix)
 	
-	def hamiltonian_path(self):
+	def hamiltonian_paths(self): # implementar cambio de nodos (for)
 		"""Determina un camino que recorre todos los nodos
 		Retorna el camino"""
 		dim = self.__matrix.get_dim()
@@ -352,12 +361,13 @@ class Graph:
 			if self.degree(i) < minDegree:
 				minDegree = self.degree(i)
 				node = i
+		temp = []
 		path = []
-		if self.__hamilton_algorithm(node, path):
-			return path
-		return None
+		self.__hamilton_algorithm(node, temp, path):
+		# revisar caminos repetidos en path
+		return path
 	
-	def eulerian_path(self):
+	def eulerian_paths(self):
 		"""Determina un camino/ciclo euleriano, en caso de que exista
 		Retorna 'None' si no existe. Retorna el resultado de __fleury_algorithm en otro caso"""
 		dim = self.__matrix.get_dim()

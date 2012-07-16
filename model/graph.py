@@ -1,5 +1,16 @@
-import copy		# Para hacer copias superficiales (shallow copies)
+from copy import copy	# Para hacer copias superficiales (shallow copies)
 from matrix import *
+
+#                REVISAR                #
+#########################################
+# def __fleury_algorithm(self, origin)  #
+# def __filter(self,array)              #
+# def connected(self)                   #
+# def weighted(self)                    #
+# def kruskal(self)                     #
+# def hamiltonian_paths(self)           #
+# def eulerian_paths(self)              #
+#########################################
 
 class Graph:
 	"""Clase que representa un grafo en un determinado momento
@@ -137,7 +148,6 @@ class Graph:
 							smaller = matrix[i][j]
 			if smaller == 0:
 				return None
-			
 			if traveled.count(row) == 0:
 				traveled.append(row)
 			if traveled.count(col) == 0:
@@ -168,7 +178,7 @@ class Graph:
 		while not finished:
 			matrix = []
 			for i in range(dim):
-				matrix.append( copy.copy(traveledEdges[i]) )
+				matrix.append( copy(traveledEdges[i]) )
 			
 			for i in range(dim):
 				if matrix[origin][i] == 0:
@@ -194,7 +204,6 @@ class Graph:
 					if traveledEdges[i][j] != 0:
 						finished = False
 			path.append(origin)
-		
 		return path
 	
 	def __hamilton_algorithm(self, actual, stack, paths):
@@ -205,7 +214,7 @@ class Graph:
 		dim = self.__matrix.get_dim()
 		stack.append(actual)
 		if len(stack) == dim:
-			temp = copy.copy(stack)
+			temp = copy(stack)
 			paths.append(temp)
 		else:
 			for i in range(dim):
@@ -213,6 +222,44 @@ class Graph:
 					self.__hamilton_algorithm(i, stack, paths)
 		if len(stack) <= dim:
 			stack.pop()
+	
+	def __filter(self,array):
+		# revisa si array tiene caminos repetidos
+		# el codigo se ve feo, supongo que se puede mejorar
+		dim = self.__matrix.get_dim()
+		for path in range( len(array) ):
+			comparePath = path + 1
+			while comparePath < len(array):
+				i = j = 0
+				while i < dim:
+					if array[path][i] != array[comparePath][j]:
+						j += 1
+						if i > 0:
+							break
+					else:
+						i += 1
+						j += 1
+						if j == dim:
+							j = 0
+				if i == dim:
+					array.pop([comparePath])
+					continue
+				else:
+					i = j = 0
+					while i < dim:
+						if array[path][i] != array[comparePath][j]:
+							j += 1
+							if i > 0:
+								break
+						else:
+							i += 1
+							j -= 1
+							if j == -1:
+								j = dim - 1
+					if i == dim:
+						array.pop([comparePath])
+						continue
+				comparePath += 1
 	
 	def __generic_degree(self, node, matrix):
 		"""Para un nodo 'node', y una matriz 'matrix':
@@ -248,9 +295,10 @@ class Graph:
 		"""Para dos indices 'orig' y 'dest', y un peso de camino 'Weight':
 		Modifica (o setea) una relacion entre dos nodos
 		Retorna 'False' si los indices no son validos, 'True' en otro caso"""
-		if self.__validate_target(orig) and self.__validate_target(dest):
-			self.__matrix.set_relation(orig, dest, weight)
-			return True
+		if orig != dest:
+			if self.__validate_target(orig) and self.__validate_target(dest):
+				self.__matrix.set_entry(orig, dest, weight)
+				return True
 		return False
 	
 	def get_matrix(self):
@@ -267,10 +315,20 @@ class Graph:
 	def connected(self): # implementar fuertemente conexo, debilmente conexo
 		"""Determina, utilizando Busqueda en Profundidad, si el grafo es conexo o no
 		Retorna 'True' si es conexo, 'False' si no lo es"""
+	#	conexo (no dirigido)
+	#	fuertemente conexo (dirigido)
+	#	debilmente conexo (dirigido)
+	###############################################################
+	#	if self.directed():
+	#		matrix = self.get_matrix()
+	#		if not self.__connected_matrix(matrix):
+	#			matrix = self.__matrix.get_simmetric()
+	#	else:
+	#		matrix = self.get_matrix()
 		matrix = self.get_matrix()
 		return self.__connected_matrix(matrix)
 	
-	def weighted(self):
+	def weighted(self): # untested
 		"""Determina si el grafo es ponderado o no
 		Retorna 'True' si es ponderado, 'False' si no lo es"""
 		matrix = self.get_matrix()
@@ -331,6 +389,8 @@ class Graph:
 		Retorna la lista del metodo '__breadthfirst_search' en otro caso"""
 		if not self.__validate_target(origin):
 			return None
+		if not self.weighted(): # si no es ponderado, dijkstra no aplica
+			return None
 		dim = self.__matrix.get_dim()
 		matrix = self.get_matrix()
 		roads = self.__breadthfirst_search(matrix, origin)
@@ -343,7 +403,9 @@ class Graph:
 	def kruskal(self): # modificar matriz si es no-conexo
 		"""Determina un arbol recubridor minimo
 		Retorna la matriz del arbol"""
-		if self.directed():
+		if self.directed(): # si es dirigido, kruskal no aplica
+			return None
+		if not self.weighted(): # si no es ponderado, kruskal no aplica
 			return None
 		matrix = self.get_matrix()
 		return self.__kruskal_algorithm(matrix)
@@ -363,8 +425,8 @@ class Graph:
 				node = i
 		temp = []
 		path = []
-		self.__hamilton_algorithm(node, temp, path):
-		# revisar caminos repetidos en path
+		self.__hamilton_algorithm(node, temp, path)
+		self.__filter(path)
 		return path
 	
 	def eulerian_paths(self):

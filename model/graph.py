@@ -1,6 +1,7 @@
 from copy import copy	# Para hacer copias superficiales (shallow copies)
 from matrix import *
 
+
 #                REVISAR                #
 #########################################
 # def __fleury_algorithm(self, origin)  #

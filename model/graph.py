@@ -1,7 +1,6 @@
 from copy import copy	# Para hacer copias superficiales (shallow copies)
 from matrix import *
 
-
 #                REVISAR                #
 #########################################
 # def __fleury_algorithm(self, origin)  #
@@ -221,19 +220,18 @@ class Graph:
 			for i in range(dim):
 				if stack.count(i) == 0 and matrix[actual][i] != 0:
 					self.__hamilton_algorithm(i, stack, paths)
-		if len(stack) <= dim:
-			stack.pop()
+		stack.pop()
 	
 	def __filter(self,array):
 		# revisa si array tiene caminos repetidos
 		# el codigo se ve feo, supongo que se puede mejorar
 		dim = self.__matrix.get_dim()
 		for path in range( len(array) ):
-			comparePath = path + 1
-			while comparePath < len(array):
+			compare = path + 1
+			while compare < len(array):
 				i = j = 0
 				while i < dim:
-					if array[path][i] != array[comparePath][j]:
+					if array[path][i] != array[compare][j]:
 						j += 1
 						if i > 0:
 							break
@@ -243,12 +241,12 @@ class Graph:
 						if j == dim:
 							j = 0
 				if i == dim:
-					array.pop([comparePath])
+					array.pop([compare])
 					continue
 				else:
 					i = j = 0
 					while i < dim:
-						if array[path][i] != array[comparePath][j]:
+						if array[path][i] != array[compare][j]:
 							j += 1
 							if i > 0:
 								break
@@ -258,9 +256,9 @@ class Graph:
 							if j == -1:
 								j = dim - 1
 					if i == dim:
-						array.pop([comparePath])
+						array.pop([compare])
 						continue
-				comparePath += 1
+				compare += 1
 	
 	def __generic_degree(self, node, matrix):
 		"""Para un nodo 'node', y una matriz 'matrix':
@@ -316,18 +314,22 @@ class Graph:
 	def connected(self): # implementar fuertemente conexo, debilmente conexo
 		"""Determina, utilizando Busqueda en Profundidad, si el grafo es conexo o no
 		Retorna 'True' si es conexo, 'False' si no lo es"""
-	#	conexo (no dirigido)
+	#	conexo (no dirigido)trans
 	#	fuertemente conexo (dirigido)
-	#	debilmente conexo (dirigido)
+	#	debilmente conexo (dirigido) # extraer matrix simetrica
+	#	no conexo (todos los casos)
 	###############################################################
-	#	if self.directed():
-	#		matrix = self.get_matrix()
-	#		if not self.__connected_matrix(matrix):
-	#			matrix = self.__matrix.get_simmetric()
-	#	else:
-	#		matrix = self.get_matrix()
 		matrix = self.get_matrix()
-		return self.__connected_matrix(matrix)
+		if self.directed():
+			if self.__connected_matrix(matrix):
+				return True, "strongly connected"
+			matrix = self.__matrix.get_simmetric()
+			if self.__connected_matrix(matrix):
+				return True, "weakly connected"
+		
+		if self.__connected_matrix(matrix):
+			return True, "connected"
+		return False, "not connected"
 	
 	def weighted(self): # untested
 		"""Determina si el grafo es ponderado o no

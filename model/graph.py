@@ -227,11 +227,11 @@ class Graph:
 		# el codigo se ve feo, supongo que se puede mejorar
 		dim = self.__matrix.get_dim()
 		for path in range( len(array) ):
-			compare = path + 1
-			while compare < len(array):
+			comparePath = path + 1
+			while comparePath < len(array):
 				i = j = 0
 				while i < dim:
-					if array[path][i] != array[compare][j]:
+					if array[path][i] != array[comparePath][j]:
 						j += 1
 						if i > 0:
 							break
@@ -241,12 +241,12 @@ class Graph:
 						if j == dim:
 							j = 0
 				if i == dim:
-					array.pop([compare])
+					array.pop(comparePath)
 					continue
 				else:
 					i = j = 0
 					while i < dim:
-						if array[path][i] != array[compare][j]:
+						if array[path][i] != array[comparePath][j]:
 							j += 1
 							if i > 0:
 								break
@@ -256,9 +256,9 @@ class Graph:
 							if j == -1:
 								j = dim - 1
 					if i == dim:
-						array.pop([compare])
+						array.pop(comparePath)
 						continue
-				compare += 1
+				comparePath += 1
 	
 	def __generic_degree(self, node, matrix):
 		"""Para un nodo 'node', y una matriz 'matrix':
@@ -419,16 +419,10 @@ class Graph:
 		dim = self.__matrix.get_dim()
 		if not self.connected():
 			return None
-		
-		minDegree = self.degree(0)
-		node = 0
-		for i in range(dim):
-			if self.degree(i) < minDegree:
-				minDegree = self.degree(i)
-				node = i
 		temp = []
 		path = []
-		self.__hamilton_algorithm(node, temp, path)
+		for i in range(dim):
+			self.__hamilton_algorithm(i, temp, path)
 		self.__filter(path)
 		return path
 	

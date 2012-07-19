@@ -1,6 +1,7 @@
 from copy import copy	# Para hacer copias superficiales (shallow copies)
 from matrix import *
 
+
 #                REVISAR                #
 #########################################
 # def __fleury_algorithm(self, origin)  #
@@ -165,47 +166,6 @@ class Graph:
 				kruskal[col][row] = 0
 		return kruskal
 	
-	def __fleury_algorithm(self, origin): # implementar recorrido de varios caminos
-		"""Para un nodo 'origin':
-		Determina, aplicando el Algoritmo de Fleury, un camino euleriano del grafo
-		Retorna el camino euleriano encontrado (lista de nodos), o 'None' si no existe"""
-		dim = self.__matrix.get_dim()
-		traveledEdges = self.get_matrix()
-		path = []
-		path.append(origin)
-		
-		finished = False
-		while not finished:
-			matrix = []
-			for i in range(dim):
-				matrix.append( copy(traveledEdges[i]) )
-			
-			for i in range(dim):
-				if matrix[origin][i] == 0:
-					continue
-				candidate = i
-				matrix[origin][i] = 0
-				if self.__connected_matrix(matrix):
-					break
-			
-			if self.directed():
-				traveledEdges[origin][candidate] = 0
-			else:
-				traveledEdges[origin][candidate] = 0
-				traveledEdges[candidate][origin] = 0
-			
-			if origin == candidate:
-				return None
-			
-			origin = candidate
-			finished = True
-			for i in range(dim):
-				for j in range(dim):
-					if traveledEdges[i][j] != 0:
-						finished = False
-			path.append(origin)
-		return path
-	
 	def __hamilton_algorithm(self, actual, stack, paths):
 		"""Para un nodo origen 'pivot', y una matriz 'matrix':
 		Determina un recorrido para todos los nodos, sin repetirlos
@@ -314,22 +274,18 @@ class Graph:
 	def connected(self): # implementar fuertemente conexo, debilmente conexo
 		"""Determina, utilizando Busqueda en Profundidad, si el grafo es conexo o no
 		Retorna 'True' si es conexo, 'False' si no lo es"""
-	#	conexo (no dirigido)trans
+	#	conexo (no dirigido)
 	#	fuertemente conexo (dirigido)
-	#	debilmente conexo (dirigido) # extraer matrix simetrica
-	#	no conexo (todos los casos)
+	#	debilmente conexo (dirigido)
 	###############################################################
+	#	if self.directed():
+	#		matrix = self.get_matrix()
+	#		if not self.__connected_matrix(matrix):
+	#			matrix = self.__matrix.get_simmetric()
+	#	else:
+	#		matrix = self.get_matrix()
 		matrix = self.get_matrix()
-		if self.directed():
-			if self.__connected_matrix(matrix):
-				return True, "strongly connected"
-			matrix = self.__matrix.get_simmetric()
-			if self.__connected_matrix(matrix):
-				return True, "weakly connected"
-		
-		if self.__connected_matrix(matrix):
-			return True, "connected"
-		return False, "not connected"
+		return self.__connected_matrix(matrix)
 	
 	def weighted(self): # untested
 		"""Determina si el grafo es ponderado o no
@@ -425,12 +381,22 @@ class Graph:
 			self.__hamilton_algorithm(i, temp, path)
 		self.__filter(path)
 		return path
+	
+	def edges(self):
+		"""Retorna todas las aristas existentes en el grafo"""
+		c=0
+		for i in range(self.__matrix.get_dim()):
+			for j in range(self.__matrix.get_dim()):
+				if self.__matrix.get_matrix()[i][j]!=0:
+					c+=1
+		return c
+
 	def fleury(self,matrix,actual,array,path,edges,directed):
+		"""Guarda en la variable 'array' todos los caminos eulerianos posibles"""
 		dim = self.__matrix.get_dim()
 		path.append(actual)
 		if len(path)==edges+1:
-			array.append(path)
-			print path
+			array.append(copy(path))
 		else:
 			for i in range(dim):
 				if matrix[actual][i]!=0:
@@ -444,7 +410,7 @@ class Graph:
 				matrix[i][actual]=1
 			matrix[actual][i]=1
 		path.pop()
-	
+
 	def eulerian_paths(self):
 		"""Determina un camino/ciclo euleriano, en caso de que exista
 		Retorna 'None' si no existe. Retorna el resultado de __fleury_algorithm en otro caso"""
@@ -466,10 +432,13 @@ class Graph:
 				start = oddCounter[1]
 		if len(oddCounter) == 0:
 			start = 0
-		path=[]
 		array=[]
+		path=[]
 		k=copy(self.get_matrix())
-		self.fleury(k,start,array,path,6,'n')
+		if self.__matrix.symmetry()==True:
+			self.fleury(k,start,array,path,self.edges()/2,'n')
+		else:
+			self.fleury(k,start,array,path,self.edges(),'y')
 		return array
 
 # Instrucciones para probar el algoritmo

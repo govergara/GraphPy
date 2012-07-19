@@ -425,6 +425,25 @@ class Graph:
 			self.__hamilton_algorithm(i, temp, path)
 		self.__filter(path)
 		return path
+	def fleury(self,matrix,actual,array,path,edges,directed):
+		dim = self.__matrix.get_dim()
+		path.append(actual)
+		if len(path)==edges+1:
+			array.append(path)
+			print path
+		else:
+			for i in range(dim):
+				if matrix[actual][i]!=0:
+					if directed=='n':
+						matrix[i][actual]=0
+					matrix[actual][i]=0
+					self.fleury(matrix,i,array,path,edges,directed)
+		if len(path)>1:
+			i=path[-2]
+			if directed=='n':
+				matrix[i][actual]=1
+			matrix[actual][i]=1
+		path.pop()
 	
 	def eulerian_paths(self):
 		"""Determina un camino/ciclo euleriano, en caso de que exista
@@ -447,20 +466,23 @@ class Graph:
 				start = oddCounter[1]
 		if len(oddCounter) == 0:
 			start = 0
-		
-		return self.__fleury_algorithm(start)
+		path=[]
+		array=[]
+		k=copy(self.get_matrix())
+		self.fleury(k,start,array,path,6,'n')
+		return array
 
 # Instrucciones para probar el algoritmo
-# g = Graph(5)
-# g.change_relation(0,2,5)
-# g.change_relation(0,3,6)
-# g.change_relation(1,2,1)
-# g.change_relation(1,4,2)
-# g.change_relation(2,0,5)
-# g.change_relation(2,1,1)
-# g.change_relation(2,4,3)
-# g.change_relation(3,0,6)
-# g.change_relation(3,4,4)
-# g.change_relation(4,1,2)
-# g.change_relation(4,2,3)
-# g.change_relation(4,3,4)
+g = Graph(5)
+g.change_relation(0,2,5)
+g.change_relation(0,3,6)
+g.change_relation(1,2,1)
+g.change_relation(1,4,2)
+g.change_relation(2,0,5)
+g.change_relation(2,1,1)
+g.change_relation(2,4,3)
+g.change_relation(3,0,6)
+g.change_relation(3,4,4)
+g.change_relation(4,1,2)
+g.change_relation(4,2,3)
+g.change_relation(4,3,4)

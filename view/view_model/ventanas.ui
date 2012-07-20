@@ -16,6 +16,93 @@
     <property name="can_focus">False</property>
     <property name="pixbuf">_active_ Cut.ico</property>
   </object>
+  <object class="GtkFileChooserDialog" id="export">
+    <property name="can_focus">False</property>
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">Exportar</property>
+    <property name="role">GtkFileChooserDialog</property>
+    <property name="type_hint">dialog</property>
+    <property name="action">save</property>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="destinacion">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="filechooserdialog-action_area3">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="saveas">
+                <property name="label" translatable="yes">Exportar</property>
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+                <signal name="clicked" handler="on_export_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="cancell">
+                <property name="label" translatable="yes">Cancelar</property>
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+                <signal name="clicked" handler="on_destroyloader" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkComboBoxText" id="formato">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="entry_text_column">0</property>
+            <property name="id_column">1</property>
+            <items>
+              <item translatable="yes">.pdf</item>
+              <item translatable="yes">.png</item>
+              <item translatable="yes">.jpg</item>
+              <item translatable="yes">.gif</item>
+            </items>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="0">saveas</action-widget>
+      <action-widget response="0">cancell</action-widget>
+    </action-widgets>
+  </object>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">pdf.png</property>
+  </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -50,11 +137,6 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixbuf">table.png</property>
-  </object>
-  <object class="GtkImage" id="image1">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixbuf">pdf.png</property>
   </object>
   <object class="GtkImage" id="new">
     <property name="visible">True</property>
@@ -145,7 +227,7 @@
   </object>
   <object class="GtkWindow" id="principal">
     <property name="can_focus">False</property>
-    <signal name="destroy" handler="destroy" swapped="no"/>
+    <signal name="destroy" handler="on_close" swapped="no"/>
     <child>
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
@@ -449,6 +531,7 @@
                 <property name="use_action_appearance">False</property>
                 <property name="image">image1</property>
                 <property name="image_position">bottom</property>
+                <signal name="clicked" handler="on_to_pdf" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -486,7 +569,7 @@
                     <property name="use_action_appearance">False</property>
                     <property name="image">image2</property>
                     <property name="image_position">top</property>
-                    <signal name="clicked" handler="draw_nodo" object="workstation" swapped="no"/>
+                    <signal name="clicked" handler="on_change_operation" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -521,6 +604,7 @@
                     <property name="use_action_appearance">False</property>
                     <property name="image">image4</property>
                     <property name="image_position">top</property>
+                    <signal name="clicked" handler="on_node" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -538,6 +622,7 @@
                     <property name="use_action_appearance">False</property>
                     <property name="image">image5</property>
                     <property name="image_position">top</property>
+                    <signal name="clicked" handler="on_add_edge" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -645,6 +730,7 @@ Arista Dirigida</property>
     <property name="border_width">5</property>
     <property name="role">GtkFileChooserDialog</property>
     <property name="type_hint">dialog</property>
+    <property name="action">save</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="filechooserdialog-vbox2">
         <property name="can_focus">False</property>
@@ -693,10 +779,16 @@ Arista Dirigida</property>
           </packing>
         </child>
         <child>
-          <object class="GtkEntry" id="nameFile">
+          <object class="GtkComboBoxText" id="format">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="invisible_char">●</property>
+            <property name="can_focus">False</property>
+            <property name="entry_text_column">0</property>
+            <property name="id_column">1</property>
+            <items>
+              <item translatable="yes">.pdf</item>
+              <item translatable="yes">.png</item>
+              <item translatable="yes">.gif</item>
+            </items>
           </object>
           <packing>
             <property name="expand">False</property>

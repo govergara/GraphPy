@@ -1,10 +1,8 @@
-
-try:
-	from Tkinter import *
-except:
-	print "PARA EJECUTAR GRAPHPY NECESITAS TK INSTALADO EN TU SO"
-
-
+import math
+import random
+import time
+import cairo
+from gi.repository import Gtk,Gdk
 
 class Node:
 
@@ -89,7 +87,7 @@ class Edge:
 			return None
 	
 	def __str__(self):
-		return  "ARISTA CONEXION : ({0:d},{1:d})\n ".format(self.__conexion[0],self.__conexion[1])
+		return  "ARISTA CONEXION : ({0:d},{1:d})\n ".format(self.__connection[0],self.__connection[1])
 
 class Graph:
 
@@ -115,7 +113,7 @@ class Graph:
 	
 	def get_nodes(self):
 		return self.__nodes
-	
+
 	def get_edges(self):
 		return self.__edges
 	
@@ -141,37 +139,61 @@ class Graph:
 		except:
 			return None
 	
-	def update_edges(self,old, newId):
+	def exist_edge(self, connection):
 		for i in self.__edges:
-			connection = i.get_connection()
-			if connection[0] == old:
-				new = (newId,connection[1])
-				i.set_connection(new)
-			elif connection[1] == old:
-				new = (connection[0],newId)
-				i.set_connection(new)
+			if i.get_connection() == connection:
+				return True
+		return False
+	
+
 		
+	
+	
 
 class Squishy:
 
-	def __init__(self):
-		# estado 1 -> mover nodos
-		# estado 2 -> agrega nodos
-		# estado 3 -> agrea arista
+	def __init__(self, drawArea):
 		self.__graph = Graph()
-		tmp = Tk()
-		self.__drawArea = Canvas(tmp,width=500, height=500)
-		self.__drawArea.pack()
-		self.__drawArea.bind("<B1-Motion>",self.__onMotion)
-		self.__drawArea.bind("<Button-3>",self.__onBackClick)
-		self.__drawArea.bind("<Double-Button-1>", self.__onDoubleClick)
+		self.__drawArea = drawArea
+		self.__connect_signals_draw()
 		self.__status = 1
-		self.__widgets = []
-		self.__tmpId =  None
+		self.__ind = 0
+		self.__tmpSelection = None
 	
-
-	def throw_squishy(self):
-		mainloop()
+	
+	def __connect_signals_draw(self):
+		self.__drawArea.connect("draw",self.repaint)
+		self.__drawArea.add_events(Gdk.ModifierType.BUTTON1_MASK)
+		self.__drawArea.add_events(Gdk.EventMask.BUTTON1_MOTION_MASK)
+		self.__drawArea.connect("button-press-event",self.__on_click)
+		self.__drawArea.connect("motion-notify-event",self.__on_motion)
+	
+	def __draw(self, pdf = False, png = False, jpg = False):
+		if pdf is False and png is False and jpg is False:
+			sf=cairo.ImageSurface(cairo.FORMAT_ARGB32,600,500)
+		else:
+			adress = self.__folder + self.__format
+			print adress
+			if pdf is True:
+				sf = cairo.PDFSurface(adress,600,500)	
+		
+		cntx = cairo.Context(sf);
+		nodes = self.__graph.get_nodes()
+		edges = self.__graph.get_edges()
+		cntx.set_source_rgb(0,0,0)
+		for i in nodes:
+			pos = i.get_position()
+			cntx.arc(pos[0],pos[1], 10, 0, 2*math.pi)
+			cntx.fill()
+		print edges
+		for i in edges:
+			nod1 = self.__graph.get_node(i.get_connection()[0])
+			nod2 = self.__graph.get_node(i.get_connection()[1])
+			cntx.move_to(nod1.get_position()[0],nod1.get_position()[1])
+			cntx.line_to(nod2.get_position()[0],nod2.get_position()[1])
+			cntx.stroke()
+		return sf
+		
 		
 	def get_graph(self):
 		try:
@@ -184,6 +206,7 @@ class Squishy:
 	
 	def set_status(self, newStatus):
 		try:
+			self.__tmpSelection = None
 			self.__status = newStatus
 			return True
 		except:
@@ -192,82 +215,70 @@ class Squishy:
 	def get_status(self):
 		return self.__status
 	
-	def set_sraph( self, newGraph):
+	def set_graph( self, newGraph):
 		try:
 			self.__graph = newGraph
 			return True
 		except:
 			return False
-	
-	def __draw(self):
-		canvas = self.__drawArea
-		nodes = self.__graph.get_nodes()
-		edges = self.__graph.get_edges()
-		canvas.delete(ALL)
-		for i in nodes:
+	def __over_nodes(self,x ,y ):
+		limit = [(x-15,y+15),(x+15,y+15),(x-15,y-15),(x+15,y-15)]
+		for i in self.__graph.get_nodes():
 			pos = i.get_position()
-			supIzX = pos[0] - 10
-			supIzY = pos[1] - 10
-			infDerx = pos[0] + 10
-			infDerY = pos[1] + 10 
-			tmpId = canvas.create_oval(supIzX,supIzY,infDerx,infDerY,fill='black')
-			id = i.get_id()
-			i.set_id(tmpId)
-			self.__graph.update_edges(id,tmpId)
-
-
-		for i in edges:
-			connected = i.get_connection()
-			nod1 = self.__graph.get_node(connected[0])
-			nod2 = self.__graph.get_node(connected[1])
-			pos1 = nod1.get_position()
-			pos2 = nod2.get_position()
-			canvas.create_line(pos1[0],pos1[1],pos2[0],pos2[1],arrow=LAST)
-	
-	def __onBackClick(self, event):
-		self.__tmpId = None
-		supIzqX = event.x - 10
-		supIzqY = event.y - 10
-		infDerX = event.x + 10
-		infDerY = event.y + 10
-		id = self.__drawArea.create_oval(supIzqX,supIzqY,infDerX,infDerY,fill='black')
-		self.__graph.new_node(id,"Nuevo",(event.x,event.y))
-		self.__draw()
-	
-	def __onMotion(self,event):
-		self.__tmpId = None
-		can = self.__drawArea
-		supIzqX = event.x - 15
-		supIzqY = event.y - 15
-		infDerX = event.x + 15
-		infDerY = event.y + 15
- 		element = can.find_overlapping(supIzqX,supIzqY,infDerX,infDerY)
-		if len(element) >=1 :
-			if can.type(element[0]) == "oval":
-				nodo = self.__graph.get_node(element[0])
-				nodo.set_position((event.x,event.y))
-				self.__draw()
-	
-	def __onDoubleClick(self, event):
-		can = self.__drawArea
-		supIzqX = event.x - 15
-		supIzqY = event.y - 15
-		infDerX = event.x + 15
-		infDerY = event.y + 15
- 		elements = can.find_overlapping(supIzqX,supIzqY,infDerX,infDerY)
-		if len(elements) >= 1:
-			if can.type(elements[0]) == "oval":
-				if self.__tmpId is None:
-					self.__tmpId = elements[0]
-				else:
-					if self.__tmpId != elements[0]:
-						connection = (self.__tmpId, elements[0])
-						self.__graph.new_edge(0,connection)
-						self.__tmpId = None
-						self.__draw()
-					else:
-						self.__tmpId = None
+			if pos[0] >= limit[0][0] and pos[1] <= limit[0][1]:
+				if pos[0] <= limit[1][0] and pos[1] <= limit[1][1]:
+					if pos[0] >= limit[2][0] and pos[1] >= limit[2][1]:
+						if pos[0] <= limit[3][0] and pos[1] >= limit[3][1]:
+								return i
 			
+			
+	def __on_click(self, widget, data=None):
+		if data.button == 1:
+			if self.__status == 1:
+				self.__graph.new_node(random.randint(1,1000),"nuevo",(data.x,data.y))
+				self.__drawArea.queue_draw()
+		if data.button == 3:
+			if self.__tmpSelection == None:
+				self.__tmpSelection = self.__over_nodes(data.x, data.y)
+			else:
+				other = self.__over_nodes(data.x, data.y)
+				if other is None:
+					self.__tmpSelection = None
+				else:
+					connected = (self.__tmpSelection.get_id(),other.get_id())
+					if not self.__graph.exist_edge(connected):
+						self.__graph.new_edge(0,connected)
+						self.__drawArea.queue_draw()
+					self.__tmpSelection = None
+			
+	
+	def __on_motion(self, widget, data=None):
+		if self.__status == 2:
+			self.__tmpSelection = None
+			tmp = self.__over_nodes(data.x,data.y)
+			tmp.set_position((data.x,data.y))
+			self.__drawArea.queue_draw()
+			
+	def _on_double_click(self, widget, data=None):
+		pass
+
+    
+	def repaint(self, widget, event):
+		surf = self.__draw()
+		self.canvas = context = widget.get_window().cairo_create()
+		context.set_source_surface(surf)
+		context.paint()
+	
+	def create_file(self, direction, format):
+		self.__folder = direction
+		self.__format = format
+		if(format == '.pdf'):
+			self.__draw(True, False, False)
+		if(format == '.png'):
+			self.__draw(False, True, False)
+		if(format == '.jpg'):
+			self.__draw(False, False, True)
+		
 
 		
 

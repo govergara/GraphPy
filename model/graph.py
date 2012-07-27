@@ -259,6 +259,20 @@ class Graph:
 				return True
 		return False
 	
+	def del_edge(self, node1, node2):
+		"""Para dos nodos 'node1' y 'node2'
+		Elimina la arista que une ambos nodos
+		Retorna 'True' si fue eliminada, 'False' en otro caso"""
+		if node1 != node2:
+			if self.__validate_target(node1) and self.__validate_target(node2):
+				if self.directed():
+					self.__matrix.set_entry(node1, node2, 0)
+				else:
+					self.__matrix.set_entry(node1, node2, 0)
+					self.__matrix.set_entry(node2, node1, 0)
+				return True
+		return False
+	
 	def get_matrix(self):
 		"""Retorna una copia de la Matriz de Incidencia/Adyacencia"""
 		return self.__matrix.get_matrix()
@@ -281,6 +295,19 @@ class Graph:
 				else:
 					complementary[i].append(0)
 		return complementary
+	
+	def get_complete(self):
+		"""Retorna la Matriz del grafo completo"""
+		dim = self.__matrix.get_dim()
+		complete = []
+		for i in range(dim):
+			complete.append([])
+			for j in range(dim):
+				if i == j:
+					complete[i].append(0)
+					continue
+				complete[i].append(1)
+		return complete
 	
 	def directed(self):
 		"""Determina si el grafo es dirigido o no dirigido

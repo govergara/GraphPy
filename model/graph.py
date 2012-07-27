@@ -1,8 +1,6 @@
 from copy import copy	# Para hacer copias superficiales (shallow copies)
 from matrix import *
 
-# Revisar get_complementary(self)
-
 class Graph:
 	"""Clase que representa un grafo en un determinado momento
 	Utiliza la Matriz de Adyacencia/Incidencia"""
@@ -240,13 +238,24 @@ class Graph:
 			return self.__matrix.del_entry(node)
 		return False
 	
-	def change_relation(self, orig, dest, weight):
-		"""Para dos indices 'orig' y 'dest', y un peso de camino 'Weight':
-		Modifica (o setea) una relacion entre dos nodos
+	def add_edge_dir(self, orig, dest, weight):
+		"""Para dos indices 'orig' y 'dest', y un peso de camino 'weight':
+		Modifica (o setea) una relacion dirigida entre ambos nodos
 		Retorna 'False' si los indices no son validos, 'True' en otro caso"""
 		if orig != dest:
 			if self.__validate_target(orig) and self.__validate_target(dest):
 				self.__matrix.set_entry(orig, dest, weight)
+				return True
+		return False
+	
+	def add_edge_ndir(self, node1, node2, weight):
+		"""Para dos indices 'node1' y 'node2', y un peso de camino 'weight':
+		Modifica (o setea) una relacion no dirigida entre ambos nodos
+		Retorna 'False' si los indices no son validos, 'True' en otro caso"""
+		if node1 != node2:
+			if self.__validate_target(node1) and self.__validate_target(node2):
+				self.__matrix.set_entry(node1, node2, weight)
+				self.__matrix.set_entry(node2, node1, weight)
 				return True
 		return False
 	

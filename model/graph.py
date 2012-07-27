@@ -1,17 +1,7 @@
 from copy import copy	# Para hacer copias superficiales (shallow copies)
 from matrix import *
 
-
-#                REVISAR                #
-#########################################
-# def __fleury_algorithm(self, origin)  #
-# def __filter(self,array)              #
-# def connected(self)                   #
-# def weighted(self)                    #
-# def kruskal(self)                     #
-# def hamiltonian_paths(self)           #
-# def eulerian_paths(self)              #
-#########################################
+# Revisar get_complementary(self)
 
 class Graph:
 	"""Clase que representa un grafo en un determinado momento
@@ -264,6 +254,23 @@ class Graph:
 		"""Retorna una copia de la Matriz de Incidencia/Adyacencia"""
 		return self.__matrix.get_matrix()
 	
+	def get_complementary(self):
+		"""Retorna la Matriz del grafo complementario"""
+		if self.directed():
+			return None
+		matrix = self.get_matrix()
+		dim = self.__matrix.get_dim()
+		complementary = []
+		for i in range(dim):
+			complementary.append([])
+			for j in range(dim):
+				if i == j:
+					complementary[i][j] = 0
+					continue
+				if matrix[i][j] == 0:
+					complementary[i][j] = 1
+		return complementary
+	
 	def directed(self):
 		"""Determina si el grafo es dirigido o no dirigido
 		Retorna 'True' si es dirigido, 'False' si no lo es"""
@@ -277,13 +284,6 @@ class Graph:
 	#	conexo (no dirigido)
 	#	fuertemente conexo (dirigido)
 	#	debilmente conexo (dirigido)
-	###############################################################
-	#	if self.directed():
-	#		matrix = self.get_matrix()
-	#		if not self.__connected_matrix(matrix):
-	#			matrix = self.__matrix.get_simmetric()
-	#	else:
-	#		matrix = self.get_matrix()
 		matrix = self.get_matrix()
 		return self.__connected_matrix(matrix)
 	

@@ -265,10 +265,12 @@ class Graph:
 			complementary.append([])
 			for j in range(dim):
 				if i == j:
-					complementary[i][j] = 0
+					complementary[i].append(0)
 					continue
 				if matrix[i][j] == 0:
-					complementary[i][j] = 1
+					complementary[i].append(1)
+				else:
+					complementary[i].append(0)
 		return complementary
 	
 	def directed(self):

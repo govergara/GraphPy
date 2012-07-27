@@ -280,14 +280,26 @@ class Graph:
 			return False
 		return True
 	
-	def connected(self): # implementar fuertemente conexo, debilmente conexo
+	def connected(self):
 		"""Determina, utilizando Busqueda en Profundidad, si el grafo es conexo o no
 		Retorna 'True' si es conexo, 'False' si no lo es"""
 	#	conexo (no dirigido)
 	#	fuertemente conexo (dirigido)
 	#	debilmente conexo (dirigido)
-		matrix = self.get_matrix()
-		return self.__connected_matrix(matrix)
+	#	no conexo (todos los casos)
+		if self.directed():
+			if self.__connected_matrix(matrix):
+				print 'strongly connected'
+				return True
+			matrix = self.__matrix.get_simmetric()
+			if self.__connected_matrix(matrix):
+				print 'weakly connected'
+				return True
+		if self.__connected_matrix(matrix):
+			print 'connected'
+			return True
+		print 'not connected'
+		return False
 	
 	def weighted(self): # untested
 		"""Determina si el grafo es ponderado o no
@@ -442,18 +454,3 @@ class Graph:
 		else:
 			self.fleury(k,start,array,path,self.edges(),'y')
 		return array
-
-# Instrucciones para probar el algoritmo
-g = Graph(5)
-g.change_relation(0,2,5)
-g.change_relation(0,3,6)
-g.change_relation(1,2,1)
-g.change_relation(1,4,2)
-g.change_relation(2,0,5)
-g.change_relation(2,1,1)
-g.change_relation(2,4,3)
-g.change_relation(3,0,6)
-g.change_relation(3,4,4)
-g.change_relation(4,1,2)
-g.change_relation(4,2,3)
-g.change_relation(4,3,4)

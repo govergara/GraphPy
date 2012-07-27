@@ -287,6 +287,7 @@ class Graph:
 	#	fuertemente conexo (dirigido)
 	#	debilmente conexo (dirigido)
 	#	no conexo (todos los casos)
+		matrix = self.__matrix.get_matrix()
 		if self.directed():
 			if self.__connected_matrix(matrix):
 				print 'strongly connected'

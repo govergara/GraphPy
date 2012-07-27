@@ -34,6 +34,7 @@
                 <property name="receives_default">True</property>
                 <property name="hexpand">True</property>
                 <property name="use_action_appearance">False</property>
+                <signal name="clicked" handler="set_color" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -159,6 +160,93 @@
       <action-widget response="0">cancell</action-widget>
     </action-widgets>
   </object>
+  <object class="GtkWindow" id="get-label">
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkBox" id="box5">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkBox" id="box6">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel" id="Etiqueta">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Etiqueta</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="label-nodo">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">●</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="box7">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkButton" id="proced">
+                <property name="label" translatable="yes">Aceptar</property>
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+                <signal name="clicked" handler="set_label" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="close-window">
+                <property name="label" translatable="yes">Cancelar</property>
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -240,6 +328,7 @@
         <property name="tooltip_text" translatable="yes">Agrega el Peso de la Arista</property>
         <property name="label" translatable="yes">Agregar Peso</property>
         <property name="use_underline">True</property>
+        <signal name="activate" handler="show_label" swapped="no"/>
       </object>
     </child>
     <child>
@@ -270,6 +359,7 @@
         <property name="tooltip_text" translatable="yes">Cambia el Color de la Arista Seleccionada</property>
         <property name="label" translatable="yes">Cambiar el Color</property>
         <property name="use_underline">True</property>
+        <signal name="activate" handler="show_color" swapped="no"/>
       </object>
     </child>
   </object>
@@ -420,6 +510,7 @@
         <property name="tooltip_text" translatable="yes">Agrega Etiqueta al Nodo </property>
         <property name="label" translatable="yes">Agregar Etiqueta</property>
         <property name="use_underline">True</property>
+        <signal name="activate" handler="show_label" swapped="no"/>
       </object>
     </child>
     <child>
@@ -450,6 +541,7 @@
         <property name="tooltip_text" translatable="yes">Cambia el Color del Nodo</property>
         <property name="label" translatable="yes">Cambiar el Color</property>
         <property name="use_underline">True</property>
+        <signal name="activate" handler="show_color" swapped="no"/>
       </object>
     </child>
   </object>
@@ -534,6 +626,35 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixbuf">print_icon.png</property>
+  </object>
+  <object class="GtkPrintUnixDialog" id="printdialog">
+    <property name="can_focus">False</property>
+    <property name="border_width">5</property>
+    <property name="type_hint">dialog</property>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="printdialog-vbox1">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="printdialog-action_area1">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkImage" id="save">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">_active_ Save.ico</property>
   </object>
   <object class="GtkWindow" id="principal">
     <property name="can_focus">False</property>
@@ -1094,35 +1215,6 @@ Arista Dirigida</property>
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkPrintUnixDialog" id="printdialog">
-    <property name="can_focus">False</property>
-    <property name="border_width">5</property>
-    <property name="type_hint">dialog</property>
-    <child internal-child="vbox">
-      <object class="GtkBox" id="printdialog-vbox1">
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox" id="printdialog-action_area1">
-            <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkImage" id="save">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixbuf">_active_ Save.ico</property>
   </object>
   <object class="GtkFileChooserDialog" id="saveFile">
     <property name="can_focus">False</property>

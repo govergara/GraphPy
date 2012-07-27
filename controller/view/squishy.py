@@ -11,7 +11,7 @@ class Node:
 		self.__id = id
 		self.__label = label
 		self.__position = position
-		self.__color = color
+		self.__color = (0,0,0)
 			
 	def set_label(self, newLabel):
 		try:
@@ -37,7 +37,7 @@ class Node:
 		try:
 			return self.__id
 		except:
-			return None
+			return False
 	
 	def set_position(self, newPosition):
 		try:
@@ -52,6 +52,19 @@ class Node:
 		except:
 			return None
 
+	def set_color(self, newColor):
+		try:
+			self.__color = newColor
+			return True
+		except:
+			return False
+
+	def get_color(self):
+		try:
+			return self.__color
+		except:
+			return False
+
 	def __str__(self):
 		return "NODO ID: {0:d}\n".format(self.__id)
 
@@ -61,6 +74,7 @@ class Edge:
 	def __init__(self, weight, connection):
 		self.__weight = weight
 		self.__connection = connection
+		self.__color = (0,0,0)
 	
 	def set_connection(self, newConnection):
 		try:
@@ -88,6 +102,32 @@ class Edge:
 		except:
 			return None
 	
+	def set_label(self, newWeight):
+		try:
+			self.__weight = newWeight
+			return True
+		except:
+			return False
+	
+	def get_label(self):
+		try:
+			return self.__weight
+		except:
+			return None
+
+	def set_color(self, newColor):
+		try:
+			self.__color = newColor
+			return True
+		except:
+			return False
+
+	def get_color(self):
+		try:
+			return self.__color
+		except:
+			return False
+
 	def __str__(self):
 		return  "ARISTA CONEXION : ({0:d},{1:d})\n ".format(self.__connection[0],self.__connection[1])
 
@@ -178,18 +218,31 @@ class Squishy:
 			self.__sf=cairo.ImageSurface(cairo.FORMAT_ARGB32,600,500)
 		else:
 			if pdf is True:
-				self.__sf = cairo.PDFSurface(self.__folder + self.__format,600,500)	
+				self.__sf = cairo.PDFSurface(self.__folder + self.__format,740,500)	
 		
 		self.__cntx = cairo.Context(self.__sf);
-		self.__cntx.set_source_rgb(0,0,0)
 		for i in self.__graph.get_nodes():
+			rgb = i.get_color()
+			self.__cntx.set_source_rgb(rgb[0], rgb[1], rgb[2])
 			self.__cntx.arc(i.get_position()[0],i.get_position()[1], 10, 0, 2*math.pi)
 			self.__cntx.fill()
+			self.__cntx.move_to(i.get_position()[0]+10,i.get_position()[1]-10)
+			self.__cntx.show_text(i.get_label())
 		print self.__graph.get_edges()
 		for i in self.__graph.get_edges():
-			self.__cntx.move_to(self.__graph.get_node(i.get_connection()[0]).get_position()[0],self.__graph.get_node(i.get_connection()[0]).get_position()[1])
-			self.__cntx.line_to(self.__graph.get_node(i.get_connection()[1]).get_position()[0],self.__graph.get_node(i.get_connection()[1]).get_position()[1])
+			rgb = i.get_color()
+			self.__cntx.set_source_rgb(rgb[0], rgb[1], rgb[2])
+			tmpx1 = self.__graph.get_node(i.get_connection()[0]).get_position()[0]
+			tmpy1 = self.__graph.get_node(i.get_connection()[0]).get_position()[1]
+			tmpx2 = self.__graph.get_node(i.get_connection()[1]).get_position()[0]
+			tmpy2 = self.__graph.get_node(i.get_connection()[1]).get_position()[1]
+
+			self.__cntx.move_to(tmpx1,tmpy1)
+			self.__cntx.line_to(tmpx2,tmpy2)
+			self.__cntx.move_to(((tmpx1+tmpx2)/2)+10,((tmpy1+tmpy2)/2)+10)
+			self.__cntx.show_text(str(i.get_weight()))
 			self.__cntx.stroke()
+		return self.__sf
 		
 		
 	def get_graph(self):
@@ -286,7 +339,10 @@ class Squishy:
 						if pos[0] <= limit[3][0] and pos[1] >= limit[3][1]:
 								return i
 		return False
-			
+	
+	def get_node(self, x,y):
+		return self.__over_nodes(x,y)
+
 	def __over_select(self):
 		for i in self.__graph.get_nodes():
 			pos = i.get_position()
@@ -311,6 +367,9 @@ class Squishy:
 				if tmpFinal[0] < x and tmpInicio[0] > x:
 					return i
 		return False
+
+	def get_edge(self, data):
+		return self.__over_edge(data.x, data.y)
 
 	def __selectMove(self, data=None):
 		for i in self.__temp:
@@ -339,6 +398,9 @@ class Squishy:
 		self.canvas.set_source_surface(self.__draw())
 		self.canvas.paint()
 	
+	def redrawing(self):
+		self.__drawArea.queue_draw()
+
 	def create_file(self, direction, format):
 		self.__folder = direction
 		self.__format = format

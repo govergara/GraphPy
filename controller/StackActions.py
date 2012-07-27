@@ -5,7 +5,7 @@ class StackActions:
 
 
 	def push(self, action):
-		if self.__count_actions <= 10:
+		if self.__count_actions <= 20:
 			self.__actions.append(action)
 			self.__count_actions += 1
 		else:

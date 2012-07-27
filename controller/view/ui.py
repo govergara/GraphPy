@@ -140,7 +140,19 @@ class Ui:
 		self.__tmp = None
 		self.__draw.reset()
 
+	def del_nodo(self):
+		if self.__draw.get_graph_super().del_node(self.__tmp.get_id()) == True:
+			self.__draw.redrawing()
+			return True
 
+	def del_edge(self):
+		if self.__draw.get_graph_super().del_edge(self.__tmp.get_connection()) == True:
+			self.__draw.redrawing()
+			return True
+
+	def set_malla(self, boolean):
+		self.__draw.set_malla(boolean)
+		self.__draw.redrawing()
  
 
 

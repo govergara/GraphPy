@@ -8,12 +8,15 @@ import copy
 class Node:
 
 	def __init__(self, id=-1, position=None, label=None, color=None):
+	"""Funcion Constructora que Genera un Nodo, requiere el ID_asociado, la posición que
+	es una Tupla, la etiqueta del Nodo y su color (Tupla RGB)"""
 		self.__id = id
 		self.__label = label
 		self.__position = position
 		self.__color = (0,0,0)
 			
 	def set_label(self, newLabel):
+		"""Asigna una nueva Etiqueta al Nodo"""
 		try:
 			self.__label = newLabel
 			return True
@@ -21,12 +24,14 @@ class Node:
 			return False
 	
 	def get_label(self):
+		"""Obtiene el Valor de la Etiqueta del Nodo"""
 		try:
 			return self.__label
 		except:
 			return None
 	
 	def set_id(self, newId):
+		"""Asigna un nuevo Id al Nodo"""
 		try:
 			self.__id = newId
 			return True
@@ -34,12 +39,14 @@ class Node:
 			return False
 
 	def get_id(self):
+		"""Obtiene el Valor del ID del Nodo"""
 		try:
 			return self.__id
 		except:
 			return False
 	
 	def set_position(self, newPosition):
+		
 		try:
 			self.__position = newPosition
 			return True
@@ -160,18 +167,21 @@ class Graph:
 		return self.__edges
 	
 	def del_node(self, idTarget):
-		try:
-			self.__nodes.remove(idTarget)
-			return True
-		except:
-			return False
+		for i in self.__nodes:
+			if i.get_id() == idTarget:
+				for j in self.__edges:
+					if j.get_connection()[0] == idTarget or j.get_connection()[1] == idTarget:
+						self.__edges.remove(j)
+				self.__nodes.remove(i)
+				return True
+		return False
 
-	def del_edge(self, edgeTarget):
-		try:
-			self.__aristas.remove(edgeTarget)
-			return True
-		except:
-			return False
+	def del_edge(self, connection):
+		for i in self.__edges:
+			if i.get_connection() == connection:
+				self.__edges.remove(i)
+				return True
+		return False
 	
 	def get_node(self, idTarget):
 		try:
@@ -205,6 +215,7 @@ class Squishy:
 		self.__sf = None
 		self.__cntx = None
 		self.__temp = []
+		self.__malla = True
 	
 	
 	def __connect_signals_draw(self):
@@ -215,12 +226,17 @@ class Squishy:
 	
 	def __draw(self, pdf = False, png = False, jpg = False):
 		if pdf is False and png is False and jpg is False:
-			self.__sf=cairo.ImageSurface(cairo.FORMAT_ARGB32,600,500)
+			self.__sf=cairo.ImageSurface(cairo.FORMAT_ARGB32,740,500)
 		else:
 			if pdf is True:
 				self.__sf = cairo.PDFSurface(self.__folder + self.__format,740,500)	
 		
 		self.__cntx = cairo.Context(self.__sf);
+		if self.__malla == True :
+			self.__cntx.set_source_surface(cairo.ImageSurface.create_from_png("view/cuadricula.png"))
+			self.__cntx.paint()
+		else:
+			print "sin malla"
 		for i in self.__graph.get_nodes():
 			rgb = i.get_color()
 			self.__cntx.set_source_rgb(rgb[0], rgb[1], rgb[2])
@@ -250,6 +266,12 @@ class Squishy:
 			return copy.deepcopy(self.__graph)
 		except:
 			return None
+
+	def get_graph_super(self):
+		try:
+			return self.__graph
+		except:
+			return False
 	
 	def get_picture(self, strRuta):
 		pass
@@ -276,6 +298,9 @@ class Squishy:
 
 	def get_ind(self):
 		return self.__ind
+
+	def set_malla(self, newState):
+		self.__malla = newState
 
 	def insert_new_node(self, data=None):
 		self.__graph.new_node(random.randint(1,1000),"nuevo",(data.x,data.y))
@@ -393,7 +418,6 @@ class Squishy:
 		self.__frameFinal = (w,z)
 
 	def repaint(self, widget, event):
-		print "redibujando"
 		self.canvas = widget.get_window().cairo_create()
 		self.canvas.set_source_surface(self.__draw())
 		self.canvas.paint()
@@ -410,12 +434,6 @@ class Squishy:
 			self.__draw(False, True, False)
 		if(format == '.jpg'):
 			self.__draw(False, False, True)
-
-	def menu_contextual(self, data=None, option = False):
-		if option == False:
-			return self.__over_nodes(data.x, data.y)
-		if option == True:
-			return self.__over_edge(data.x, data.y)
 
 	def get_over(self, data=None):
 		if self.__over_nodes(data.x, data.y) != False:

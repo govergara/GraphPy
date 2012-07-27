@@ -77,13 +77,14 @@ class Controller:
 			return True
 
 		if self.__view.get_draw_status() == 3:
-			if self.__tmp == 0:
-				self.__view.insert_edge(data)
-				self.__tmp += 1
-			else:	
-				self.__redo_stack.push(self.__view.get_draw_graph())
-				self.__view.insert_edge(data)
-				self.__tmp = 0
+			if data.button == 1:
+				if self.__tmp == 0:
+					self.__view.insert_edge(data)
+					self.__tmp += 1
+				else:	
+					self.__redo_stack.push(self.__view.get_draw_graph())
+					self.__view.insert_edge(data)
+					self.__tmp = 0
 			
 
 		if self.__view.get_draw_status() == 4:
@@ -128,14 +129,26 @@ class Controller:
 		self.__view.show_label()
 
 	def set_label(self, widget, data = None):
+		self.__redo_stack.push(copy.deepcopy(self.__view.get_draw_graph()))
 		self.__view.set_new_label()
 
 	def show_color(self, widget, data = None):
 		self.__view.show_color()
 
 	def set_color(self, widget, data = None):
+		self.__redo_stack.push(copy.deepcopy(self.__view.get_draw_graph()))
 		self.__view.set_new_color()
 
+	def del_nodo(self, widget, data = None):
+		self.__redo_stack.push(copy.deepcopy(self.__view.get_draw_graph()))
+		self.__view.del_nodo()
+
+	def del_edge(self, widget, data = None):
+		self.__redo_stack.push(copy.deepcopy(self.__view.get_draw_graph()))
+		self.__view.del_edge()
+
+	def show_malla(self, widget, data=None):
+		self.__view.set_malla(widget.get_active())
 
 
 a = Controller()

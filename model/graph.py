@@ -80,12 +80,12 @@ class Graph:
 			return None
 		path = []
 		temp = target
-		while True: # almacena los nodos en orden inverso
+		while True:
 			path.append(temp)
 			temp = status[temp]['from']
 			if temp == -1:
 				break
-		path.reverse() # revierte el orden de los nodos
+		path.reverse()
 		return path
 	
 	def __cicle(self, begin, matrix):
@@ -170,7 +170,41 @@ class Graph:
 					self.__hamilton_algorithm(i, stack, paths)
 		stack.pop()
 	
+	def __edges(self):
+		"""Retorna todas las aristas existentes en el grafo"""
+		counter = 0
+		matrix = self.__matrix.get_matrix()
+		dim = self.__matrix.get_dim()
+		for i in range(dim):
+			for j in range(dim):
+				if matrix[i][j] != 0:
+					counter += 1
+		return counter
+
+	def __fleury(self, matrix, actual, array, path, edges, directed):
+		"""Guarda en la variable 'array' todos los caminos eulerianos posibles"""
+		dim = self.__matrix.get_dim()
+		path.append(actual)
+		if len(path) == (edges + 1):
+			array.append(copy(path))
+		else:
+			for i in range(dim):
+				if matrix[actual][i] != 0:
+					if not directed:
+						matrix[i][actual] = 0
+					matrix[actual][i] = 0
+					self.__fleury(matrix, i, array, path, edges, directed)
+		if len(path) > 1:
+			i = path[-2]
+			if not directed:
+				matrix[i][actual] = 1
+			matrix[actual][i] = 1
+		path.pop()
+	
 	def __filter(self,array):
+		"""Para una lista 'array'
+		Elimina caminos repetidos de la lista
+		Incluye orden inverso y camino circular"""
 		# revisa si array tiene caminos repetidos
 		# el codigo se ve feo, supongo que se puede mejorar
 		dim = self.__matrix.get_dim()
@@ -338,7 +372,7 @@ class Graph:
 		print 'not connected'
 		return False
 	
-	def weighted(self): # untested
+	def weighted(self):
 		"""Determina si el grafo es ponderado o no
 		Retorna 'True' si es ponderado, 'False' si no lo es"""
 		matrix = self.get_matrix()
@@ -399,7 +433,7 @@ class Graph:
 		Retorna la lista del metodo '__breadthfirst_search' en otro caso"""
 		if not self.__validate_target(origin):
 			return None
-		if not self.weighted(): # si no es ponderado, dijkstra no aplica
+		if not self.weighted():
 			return None
 		dim = self.__matrix.get_dim()
 		matrix = self.get_matrix()
@@ -410,17 +444,17 @@ class Graph:
 			paths.append(temp)
 		return paths
 	
-	def kruskal(self): # modificar matriz si es no-conexo
+	def kruskal(self):
 		"""Determina un arbol recubridor minimo
 		Retorna la matriz del arbol"""
-		if self.directed(): # si es dirigido, kruskal no aplica
+		if self.directed():
 			return None
-		if not self.weighted(): # si no es ponderado, kruskal no aplica
+		if not self.weighted():
 			return None
 		matrix = self.get_matrix()
 		return self.__kruskal_algorithm(matrix)
 	
-	def hamiltonian_paths(self): # implementar cambio de nodos (for)
+	def hamiltonian_paths(self):
 		"""Determina un camino que recorre todos los nodos
 		Retorna el camino"""
 		dim = self.__matrix.get_dim()
@@ -431,40 +465,13 @@ class Graph:
 		for i in range(dim):
 			self.__hamilton_algorithm(i, temp, path)
 		self.__filter(path)
+		if len(path) == 0:
+			return None
 		return path
-	
-	def edges(self):
-		"""Retorna todas las aristas existentes en el grafo"""
-		c=0
-		for i in range(self.__matrix.get_dim()):
-			for j in range(self.__matrix.get_dim()):
-				if self.__matrix.get_matrix()[i][j]!=0:
-					c+=1
-		return c
-
-	def fleury(self,matrix,actual,array,path,edges,directed):
-		"""Guarda en la variable 'array' todos los caminos eulerianos posibles"""
-		dim = self.__matrix.get_dim()
-		path.append(actual)
-		if len(path)==edges+1:
-			array.append(copy(path))
-		else:
-			for i in range(dim):
-				if matrix[actual][i]!=0:
-					if directed=='n':
-						matrix[i][actual]=0
-					matrix[actual][i]=0
-					self.fleury(matrix,i,array,path,edges,directed)
-		if len(path)>1:
-			i=path[-2]
-			if directed=='n':
-				matrix[i][actual]=1
-			matrix[actual][i]=1
-		path.pop()
 
 	def eulerian_paths(self):
 		"""Determina un camino/ciclo euleriano, en caso de que exista
-		Retorna 'None' si no existe. Retorna el resultado de __fleury_algorithm en otro caso"""
+		Retorna 'None' si no existe. Retorna el resultado de __fleury en otro caso"""
 		dim = self.__matrix.get_dim()
 		if not self.connected():
 			return None
@@ -483,11 +490,13 @@ class Graph:
 				start = oddCounter[1]
 		if len(oddCounter) == 0:
 			start = 0
-		array=[]
-		path=[]
-		k=copy(self.get_matrix())
-		if self.__matrix.symmetry()==True:
-			self.fleury(k,start,array,path,self.edges()/2,'n')
+		array = []
+		path = []
+		matrix = copy(self.get_matrix())
+		if self.__matrix.symmetry() == True:
+			self.__fleury(matrix, start, array, path, self.__edges()/2, False)
 		else:
-			self.fleury(k,start,array,path,self.edges(),'y')
+			self.__fleury(matrix, start, array, path, self.__edges(), True)
+		if len(array) == 0:
+			return None
 		return array

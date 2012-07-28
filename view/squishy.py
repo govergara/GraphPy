@@ -3,7 +3,10 @@ import random
 import time
 import cairo
 from gi.repository import Gtk,Gdk
+<<<<<<< HEAD
 import copy
+=======
+>>>>>>> upstream/master
 
 class Node:
 
@@ -147,6 +150,13 @@ class Graph:
 				return True
 		return False
 	
+<<<<<<< HEAD
+=======
+
+		
+	
+	
+>>>>>>> upstream/master
 
 class Squishy:
 
@@ -157,6 +167,7 @@ class Squishy:
 		self.__status = 1
 		self.__ind = 0
 		self.__tmpSelection = None
+<<<<<<< HEAD
 		self.__frameInicio = (0,0) 
 		self.__frameFinal = (0,0)
 		self.__deltaI = (0,0)
@@ -165,12 +176,15 @@ class Squishy:
 		self.__sf = None
 		self.__cntx = None
 		self.__temp = []
+=======
+>>>>>>> upstream/master
 	
 	
 	def __connect_signals_draw(self):
 		self.__drawArea.connect("draw",self.repaint)
 		self.__drawArea.add_events(Gdk.ModifierType.BUTTON1_MASK)
 		self.__drawArea.add_events(Gdk.EventMask.BUTTON1_MOTION_MASK)
+<<<<<<< HEAD
 		self.__drawArea.add_events(Gdk.EventMask.BUTTON_RELEASE_MASK)
 	
 	def __draw(self, pdf = False, png = False, jpg = False):
@@ -190,6 +204,36 @@ class Squishy:
 			self.__cntx.move_to(self.__graph.get_node(i.get_connection()[0]).get_position()[0],self.__graph.get_node(i.get_connection()[0]).get_position()[1])
 			self.__cntx.line_to(self.__graph.get_node(i.get_connection()[1]).get_position()[0],self.__graph.get_node(i.get_connection()[1]).get_position()[1])
 			self.__cntx.stroke()
+=======
+		self.__drawArea.connect("button-press-event",self.__on_click)
+		self.__drawArea.connect("motion-notify-event",self.__on_motion)
+	
+	def __draw(self, pdf = False, png = False, jpg = False):
+		if pdf is False and png is False and jpg is False:
+			sf=cairo.ImageSurface(cairo.FORMAT_ARGB32,600,500)
+		else:
+			adress = self.__folder + self.__format
+			print adress
+			if pdf is True:
+				sf = cairo.PDFSurface(adress,600,500)	
+		
+		cntx = cairo.Context(sf);
+		nodes = self.__graph.get_nodes()
+		edges = self.__graph.get_edges()
+		cntx.set_source_rgb(0,0,0)
+		for i in nodes:
+			pos = i.get_position()
+			cntx.arc(pos[0],pos[1], 10, 0, 2*math.pi)
+			cntx.fill()
+		print edges
+		for i in edges:
+			nod1 = self.__graph.get_node(i.get_connection()[0])
+			nod2 = self.__graph.get_node(i.get_connection()[1])
+			cntx.move_to(nod1.get_position()[0],nod1.get_position()[1])
+			cntx.line_to(nod2.get_position()[0],nod2.get_position()[1])
+			cntx.stroke()
+		return sf
+>>>>>>> upstream/master
 		
 		
 	def get_graph(self):
@@ -220,6 +264,7 @@ class Squishy:
 			return True
 		except:
 			return False
+<<<<<<< HEAD
 
 	def get_ind(self):
 		return self.__ind
@@ -276,6 +321,8 @@ class Squishy:
 			self.__drawArea.queue_draw()
 			self.__deltaI = (data.x, data.y)
 
+=======
+>>>>>>> upstream/master
 	def __over_nodes(self,x ,y ):
 		limit = [(x-15,y+15),(x+15,y+15),(x-15,y-15),(x+15,y-15)]
 		for i in self.__graph.get_nodes():
@@ -285,6 +332,7 @@ class Squishy:
 					if pos[0] >= limit[2][0] and pos[1] >= limit[2][1]:
 						if pos[0] <= limit[3][0] and pos[1] >= limit[3][1]:
 								return i
+<<<<<<< HEAD
 		return False
 			
 	def __over_select(self):
@@ -338,6 +386,46 @@ class Squishy:
 		self.canvas = widget.get_window().cairo_create()
 		self.canvas.set_source_surface(self.__draw())
 		self.canvas.paint()
+=======
+			
+			
+	def __on_click(self, widget, data=None):
+		if data.button == 1:
+			if self.__status == 1:
+				self.__graph.new_node(random.randint(1,1000),"nuevo",(data.x,data.y))
+				self.__drawArea.queue_draw()
+		if data.button == 3:
+			if self.__tmpSelection == None:
+				self.__tmpSelection = self.__over_nodes(data.x, data.y)
+			else:
+				other = self.__over_nodes(data.x, data.y)
+				if other is None:
+					self.__tmpSelection = None
+				else:
+					connected = (self.__tmpSelection.get_id(),other.get_id())
+					if not self.__graph.exist_edge(connected):
+						self.__graph.new_edge(0,connected)
+						self.__drawArea.queue_draw()
+					self.__tmpSelection = None
+			
+	
+	def __on_motion(self, widget, data=None):
+		if self.__status == 2:
+			self.__tmpSelection = None
+			tmp = self.__over_nodes(data.x,data.y)
+			tmp.set_position((data.x,data.y))
+			self.__drawArea.queue_draw()
+			
+	def _on_double_click(self, widget, data=None):
+		pass
+
+    
+	def repaint(self, widget, event):
+		surf = self.__draw()
+		self.canvas = context = widget.get_window().cairo_create()
+		context.set_source_surface(surf)
+		context.paint()
+>>>>>>> upstream/master
 	
 	def create_file(self, direction, format):
 		self.__folder = direction
@@ -348,6 +436,7 @@ class Squishy:
 			self.__draw(False, True, False)
 		if(format == '.jpg'):
 			self.__draw(False, False, True)
+<<<<<<< HEAD
 
 	def menu_contextual(self, data=None, option = False):
 		if option == False:
@@ -362,6 +451,8 @@ class Squishy:
 			return 2
 		return 3
 
+=======
+>>>>>>> upstream/master
 		
 
 		

@@ -162,12 +162,16 @@
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+<<<<<<< HEAD
     <property name="pixbuf">export.png</property>
   </object>
   <object class="GtkImage" id="image10">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixbuf">_active_ Redo.ico</property>
+=======
+    <property name="pixbuf">pdf.png</property>
+>>>>>>> upstream/master
   </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
@@ -204,6 +208,7 @@
     <property name="can_focus">False</property>
     <property name="pixbuf">table.png</property>
   </object>
+<<<<<<< HEAD
   <object class="GtkImage" id="image9">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -453,6 +458,8 @@
       </object>
     </child>
   </object>
+=======
+>>>>>>> upstream/master
   <object class="GtkImage" id="new">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -934,7 +941,11 @@
                     <property name="use_action_appearance">False</property>
                     <property name="image">image2</property>
                     <property name="image_position">top</property>
+<<<<<<< HEAD
                     <signal name="clicked" handler="on_cursor" swapped="no"/>
+=======
+                    <signal name="clicked" handler="on_change_operation" swapped="no"/>
+>>>>>>> upstream/master
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1178,10 +1189,23 @@ Arista Dirigida</property>
           </packing>
         </child>
         <child>
+<<<<<<< HEAD
           <object class="GtkLabel" id="format">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Formato .Gpy</property>
+=======
+          <object class="GtkComboBoxText" id="format">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="entry_text_column">0</property>
+            <property name="id_column">1</property>
+            <items>
+              <item translatable="yes">.pdf</item>
+              <item translatable="yes">.png</item>
+              <item translatable="yes">.gif</item>
+            </items>
+>>>>>>> upstream/master
           </object>
           <packing>
             <property name="expand">False</property>

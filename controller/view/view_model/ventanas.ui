@@ -4,6 +4,7 @@
   <!-- interface-requires unixprint 0.0 -->
   <object class="GtkWindow" id="color">
     <property name="can_focus">False</property>
+    <property name="window_position">mouse</property>
     <child>
       <object class="GtkBox" id="box3">
         <property name="visible">True</property>
@@ -43,14 +44,83 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="Cancel">
-                <property name="label" translatable="yes">Cancelar</property>
-                <property name="use_action_appearance">False</property>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="coordenadas">
+    <property name="can_focus">False</property>
+    <property name="resizable">False</property>
+    <property name="window_position">mouse</property>
+    <child>
+      <object class="GtkBox" id="box8">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkBox" id="box9">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel" id="label1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Coordenada X:</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="coord-x">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="hexpand">True</property>
-                <property name="use_action_appearance">False</property>
+                <property name="invisible_char">●</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="box10">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel" id="label2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Coordenada Y:</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="coord-y">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">●</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -63,6 +133,22 @@
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="button1">
+            <property name="label" translatable="yes">Aplicar</property>
+            <property name="use_action_appearance">False</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="use_action_appearance">False</property>
+            <signal name="clicked" handler="set_coordenates" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
           </packing>
         </child>
       </object>
@@ -160,8 +246,140 @@
       <action-widget response="0">cancell</action-widget>
     </action-widgets>
   </object>
+  <object class="GtkWindow" id="forma-arista">
+    <property name="can_focus">False</property>
+    <property name="resizable">False</property>
+    <property name="window_position">mouse</property>
+    <property name="deletable">False</property>
+    <child>
+      <object class="GtkBox" id="box15">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel" id="label6">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Seleccione un Diseño</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkComboBoxText" id="formas_arista">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="entry_text_column">0</property>
+            <property name="id_column">1</property>
+            <items>
+              <item translatable="yes">Normal</item>
+              <item translatable="yes">Segmentada 1</item>
+              <item translatable="yes">Segmentada 2</item>
+              <item translatable="yes">Punteada</item>
+            </items>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="button4">
+            <property name="label" translatable="yes">Aplicar</property>
+            <property name="use_action_appearance">False</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="use_action_appearance">False</property>
+            <signal name="clicked" handler="set_forma_arista" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="forma-nodo">
+    <property name="can_focus">False</property>
+    <property name="resizable">False</property>
+    <property name="window_position">mouse</property>
+    <property name="has_resize_grip">False</property>
+    <child>
+      <object class="GtkBox" id="box13">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkBox" id="box14">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel" id="label5">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Seleccione una Forma</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="formas">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="entry_text_column">0</property>
+                <property name="id_column">0</property>
+                <items>
+                  <item translatable="yes">Circulo</item>
+                  <item translatable="yes">Cuadrado</item>
+                </items>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="button3">
+            <property name="label" translatable="yes">Aceptar</property>
+            <property name="use_action_appearance">False</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="use_action_appearance">False</property>
+            <signal name="clicked" handler="set_forma_nodo" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkWindow" id="get-label">
     <property name="can_focus">False</property>
+    <property name="resizable">False</property>
+    <property name="window_position">mouse</property>
     <child>
       <object class="GtkBox" id="box5">
         <property name="visible">True</property>
@@ -222,21 +440,6 @@
                 <property name="position">0</property>
               </packing>
             </child>
-            <child>
-              <object class="GtkButton" id="close-window">
-                <property name="label" translatable="yes">Cancelar</property>
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -277,16 +480,6 @@
     <property name="can_focus">False</property>
     <property name="pixbuf">_active_ Remove (Delete).ico</property>
   </object>
-  <object class="GtkImage" id="image6">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">object-rotate-right-symbolic</property>
-  </object>
-  <object class="GtkImage" id="image7">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixbuf">_active_ About.ico</property>
-  </object>
   <object class="GtkImage" id="image8">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -300,6 +493,7 @@
   <object class="GtkMenu" id="menu-arista">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="tearoff_title">Menu Arista</property>
     <child>
       <object class="GtkMenuItem" id="agrega-arc-dir">
         <property name="use_action_appearance">False</property>
@@ -340,6 +534,7 @@
         <property name="tooltip_text" translatable="yes">Cambia el tipo de Linea de la Arista</property>
         <property name="label" translatable="yes">Cambiar forma Arista</property>
         <property name="use_underline">True</property>
+        <signal name="activate" handler="show_forma_arista" swapped="no"/>
       </object>
     </child>
     <child>
@@ -350,6 +545,7 @@
         <property name="tooltip_text" translatable="yes">Permite Cambiar el Grosor de la linea</property>
         <property name="label" translatable="yes">Ajustar Grosor</property>
         <property name="use_underline">True</property>
+        <signal name="activate" handler="show_tamanio" swapped="no"/>
       </object>
     </child>
     <child>
@@ -493,6 +689,7 @@
   <object class="GtkMenu" id="menu-nodo">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="tearoff_title">Menu Nodo</property>
     <child>
       <object class="GtkMenuItem" id="cambia-coordenadas">
         <property name="use_action_appearance">False</property>
@@ -501,6 +698,7 @@
         <property name="tooltip_text" translatable="yes">Cambia las Coordenadas del Nodo</property>
         <property name="label" translatable="yes">Cambiar Coordenadas</property>
         <property name="use_underline">True</property>
+        <signal name="activate" handler="show_coordenates" swapped="no"/>
       </object>
     </child>
     <child>
@@ -532,6 +730,7 @@
         <property name="tooltip_text" translatable="yes">Cambia la Forma del Nodo</property>
         <property name="label" translatable="yes">Cambia Forma del Nodo</property>
         <property name="use_underline">True</property>
+        <signal name="activate" handler="show_forma_nodo" swapped="no"/>
       </object>
     </child>
     <child>
@@ -542,6 +741,7 @@
         <property name="tooltip_text" translatable="yes">Cambia el Tamaño del Nodo</property>
         <property name="label" translatable="yes">Cambiar Tamaño</property>
         <property name="use_underline">True</property>
+        <signal name="activate" handler="show_tamanio" swapped="no"/>
       </object>
     </child>
     <child>
@@ -640,6 +840,8 @@
   </object>
   <object class="GtkWindow" id="principal">
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">GraphPy</property>
+    <property name="resizable">False</property>
     <signal name="destroy" handler="on_close" swapped="no"/>
     <child>
       <object class="GtkBox" id="box1">
@@ -926,6 +1128,7 @@
                 <property name="use_action_appearance">False</property>
                 <property name="image">copy</property>
                 <property name="image_position">bottom</property>
+                <signal name="clicked" handler="copy_selected" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -962,6 +1165,7 @@
                 <property name="use_action_appearance">False</property>
                 <property name="image">paste</property>
                 <property name="image_position">bottom</property>
+                <signal name="clicked" handler="paste_selected" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1100,41 +1304,6 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="addAristaDirigida">
-                    <property name="label" translatable="yes">     Insertar
-Arista Dirigida</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="image">image6</property>
-                    <property name="image_position">top</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">4</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="insertText">
-                    <property name="label" translatable="yes">Insertar Texto</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="image">image7</property>
-                    <property name="image_position">top</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">5</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkButton" id="showMatriz">
                     <property name="label" translatable="yes">Ver Matriz</property>
                     <property name="use_action_appearance">False</property>
@@ -1148,7 +1317,7 @@ Arista Dirigida</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">6</property>
+                    <property name="position">4</property>
                   </packing>
                 </child>
                 <child>
@@ -1162,7 +1331,7 @@ Arista Dirigida</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">7</property>
+                    <property name="position">5</property>
                   </packing>
                 </child>
               </object>
@@ -1244,7 +1413,9 @@ Arista Dirigida</property>
   <object class="GtkFileChooserDialog" id="saveFile">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
+    <property name="title" translatable="yes">Guardar</property>
     <property name="role">GtkFileChooserDialog</property>
+    <property name="resizable">False</property>
     <property name="type_hint">dialog</property>
     <property name="action">save</property>
     <child internal-child="vbox">
@@ -1312,5 +1483,81 @@ Arista Dirigida</property>
       <action-widget response="0">savefile</action-widget>
       <action-widget response="0">close</action-widget>
     </action-widgets>
+  </object>
+  <object class="GtkWindow" id="tamanio">
+    <property name="can_focus">False</property>
+    <property name="resizable">False</property>
+    <property name="window_position">mouse</property>
+    <property name="deletable">False</property>
+    <child>
+      <object class="GtkBox" id="box11">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkBox" id="box12">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel" id="label3">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Espesor:</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="get-tam">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">●</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label4">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Px.</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="button2">
+            <property name="label" translatable="yes">Aplicar</property>
+            <property name="use_action_appearance">False</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="use_action_appearance">False</property>
+            <signal name="clicked" handler="set_tamanio" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
   </object>
 </interface>

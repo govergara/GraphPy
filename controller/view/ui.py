@@ -30,6 +30,10 @@ class Ui:
 		self.__menuArista = self.__loader.get_object("menu-arista")
 		self.__labelWindow = self.__loader.get_object("get-label")
 		self.__menuColor = self.__loader.get_object("color")
+		self.__menuCoordenates = self.__loader.get_object("coordenadas")
+		self.__menuTamanio = self.__loader.get_object("tamanio")
+		self.__menuFormaNodo = self.__loader.get_object("forma-nodo")
+		self.__menuFormaArista = self.__loader.get_object("forma-arista")
 		self.__draw = squishy.Squishy(self.__darea)
 
 		
@@ -153,6 +157,76 @@ class Ui:
 	def set_malla(self, boolean):
 		self.__draw.set_malla(boolean)
 		self.__draw.redrawing()
- 
 
+	def show_coordenates(self):
+		self.__coord_x = self.__loader.get_object("coord-x")
+		self.__coord_x.set_text(str(self.__tmp.get_position()[0]))
+		self.__coord_y = self.__loader.get_object("coord-y")
+		self.__coord_y.set_text(str(self.__tmp.get_position()[1]))
+		self.__menuCoordenates.show()
+
+	def set_coordenates(self):
+		print self.__tmp.get_position()
+		self.__tmp.set_position((float(self.__coord_x.get_text()), float(self.__coord_y.get_text())))
+		self.__draw.redrawing()
+		self.__coord_x.set_text("")
+		self.__coord_y.set_text("")
+		self.__menuCoordenates.hide()
+		self.__tmp = None
+		self.__draw.reset()
+ 
+ 	def show_tamanio(self):
+ 		self.__tamanio = self.__loader.get_object("get-tam")
+ 		self.__tamanio.set_text(str(self.__tmp.get_tam()))
+ 		self.__menuTamanio.show()
+
+ 	def set_tamanio(self):
+ 		self.__tmp.set_tam(float(self.__tamanio.get_text()))
+ 		self.__draw.redrawing()
+ 		self.__tamanio.set_text("")
+ 		self.__menuTamanio.hide()
+ 		self.__tmp = None
+ 		self.__draw.reset()
+
+ 	def show_forma_nodo(self):
+ 		self.__forma = self.__loader.get_object("formas")
+ 		self.__menuFormaNodo.show()
+
+ 	def set_forma_nodo(self):
+ 		if self.__forma.get_active_text() == "Circulo":
+ 			self.__tmp.set_form(1)
+ 		if self.__forma.get_active_text() == "Cuadrado":
+ 			self.__tmp.set_form(2)
+ 		self.__draw.redrawing()
+ 		self.__menuFormaNodo.hide()
+ 		self.__tmp = None
+ 		self.__draw.reset()
+
+ 	def show_forma_arista(self):
+ 		self.__forma = self.__loader.get_object("formas_arista")
+ 		self.__menuFormaArista.show()
+
+ 	def set_forma_arista(self):
+ 		if self.__forma.get_active_text() == "Normal":
+ 			self.__tmp.set_form(1)
+ 		if self.__forma.get_active_text() == "Segmentada 1":
+ 			self.__tmp.set_form(2)
+ 		if self.__forma.get_active_text() == "Segmentada 2":
+ 			self.__tmp.set_form(3)
+ 		if self.__forma.get_active_text() == "Punteada":
+ 			self.__tmp.set_form(4)
+ 		self.__draw.redrawing()
+ 		self.__menuFormaArista.hide()
+ 		self.__tmp = None
+ 		self.__draw.reset()
+
+ 	def copy_selected(self):
+ 		if self.__draw.status_temp() == True:
+ 			return self.__draw.get_temp()
+
+ 	def paste_selected(self, papelera, op):
+ 		if op == 1:
+ 			for i in papelera:
+ 				self.__draw.paste_node((i.get_position()[0], i.get_position()[1]+25), i.get_label(), i.get_color(), i.get_tam(), i.get_form())
+ 
 

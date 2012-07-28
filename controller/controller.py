@@ -9,6 +9,8 @@ class Controller:
 		self.__view.connect_signals(self)
 		self.__undo_stack = StackActions.StackActions()
 		self.__redo_stack = StackActions.StackActions()
+		self.__papelera = []
+		self.__copy_o_paste = 1
 		self.__tmp = 0
 	
 	def throw_app(self):
@@ -74,7 +76,6 @@ class Controller:
 
 		if self.__view.get_draw_status() == 2:
 			self.__redo_stack.push(copy.deepcopy(self.__view.get_draw_graph()))
-			return True
 
 		if self.__view.get_draw_status() == 3:
 			if data.button == 1:
@@ -149,6 +150,46 @@ class Controller:
 
 	def show_malla(self, widget, data=None):
 		self.__view.set_malla(widget.get_active())
+
+	def show_coordenates(self, widget, data=None):
+		self.__view.show_coordenates()
+
+	def set_coordenates(self, widget, data=None):
+		self.__redo_stack.push(copy.deepcopy(self.__view.get_draw_graph()))
+		self.__view.set_coordenates()
+
+	def show_tamanio(self, widget, data=None):
+		self.__view.show_tamanio()
+
+	def set_tamanio(self, widget, data=None):
+		self.__redo_stack.push(copy.deepcopy(self.__view.get_draw_graph()))
+		self.__view.set_tamanio()
+
+	def show_forma_nodo(self, widget, data=None):
+		self.__view.show_forma_nodo()
+
+	def set_forma_nodo(self, widget, data=None):
+		self.__redo_stack.push(copy.deepcopy(self.__view.get_draw_graph()))
+		self.__view.set_forma_nodo()
+
+	def show_forma_arista(self, widget, data=None):
+		self.__view.show_forma_arista()
+
+	def set_forma_arista(self, widget, data=None):
+		self.__redo_stack.push(copy.deepcopy(self.__view.get_draw_graph()))
+		self.__view.set_forma_arista()
+
+	def copy_selected(self, widget, data=None):
+		self.__papelera = self.__view.copy_selected()
+		self.__copy_o_paste = 1
+
+	def paste_selected(self, widget, data=None):
+		self.__view.paste_selected(self.__papelera, self.__copy_o_paste)
+		if self.__copy_o_paste == 2:
+			del self.__papelera[:]
+
+
+
 
 
 a = Controller()

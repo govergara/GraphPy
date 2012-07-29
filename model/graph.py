@@ -197,8 +197,8 @@ class Graph:
 		if len(path) > 1:
 			i = path[-2]
 			if not directed:
-				matrix[i][actual] = 1
-			matrix[actual][i] = 1
+				matrix[actual][i] = 1
+			matrix[i][actual] = 1
 		path.pop()
 	
 	def __filter(self,array):
@@ -481,7 +481,7 @@ class Graph:
 			if self.degree(i)%2 == 1:
 				oddCounter.append(i)
 		
-		if len(oddCounter) != 0 and len(oddCounter) != 2:
+		if len(oddCounter) != 0 and len(oddCounter) != 2 and self.__matrix.symmetry==False:
 			return None
 		if len(oddCounter) == 2:
 			if self.degree(oddCounter[0]) > self.degree(oddCounter[1]):
@@ -496,7 +496,17 @@ class Graph:
 		if self.__matrix.symmetry() == True:
 			self.__fleury(matrix, start, array, path, self.__edges()/2, False)
 		else:
-			self.__fleury(matrix, start, array, path, self.__edges(), True)
+			for i in range(dim):
+				self.__fleury(matrix, i, array, path, self.__edges(), True)
+				if len(array)>0:
+					return array
 		if len(array) == 0:
 			return None
 		return array
+g = Graph(5)
+g.add_edge_dir(0,3,5)
+g.add_edge_dir(3,1,6)
+g.add_edge_dir(3,4,1)
+g.add_edge_dir(1,2,2)
+g.add_edge_dir(2,3,5)
+g.add_edge_dir(4,0,1)

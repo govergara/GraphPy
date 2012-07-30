@@ -223,6 +223,7 @@ class Graph:
 		"""Constructor del Grafo, genera una Lista de nodos y de Arcos"""
 		self.__nodes = []
 		self.__edges = []
+		self.__directed = False
 	
 	def new_node(self, id, et, pos):
 		"""Inserta un nuevo Nodo en el Grafo, recibe el ID, Etiqueta y la Posicion (x,y)"""
@@ -486,7 +487,7 @@ class Squishy:
 			else:
 				connected = (self.__tmpSelection.get_id(),other.get_id())
 				if not self.__graph.exist_edge(connected):
-					self.__graph.new_edge(0,connected)
+					self.__graph.new_edge(1,connected)
 					self.__drawArea.queue_draw()
 			self.__tmpSelection = None
 			other = None

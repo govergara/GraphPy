@@ -12,6 +12,7 @@ class Controller:
 		self.__papelera = []
 		self.__copy_o_paste = 1
 		self.__tmp = 0
+		self.__areaSel = False
 	
 	def throw_app(self):
 		self.__view.throw_ui()
@@ -22,15 +23,19 @@ class Controller:
 	
 	def on_cursor(self, widget,data=None): #Accede al Cursor
 		self.__view.change_operation(2)
+		self.__areaSel = False
 	
 	def on_node(self,widget,data=None): #Accede a Crear el Nodo
 		self.__view.change_operation(1)
+		self.__areaSel = False
 	
 	def on_add_edge(self, widget, data=None): #Accede a Crear el Arco
 		self.__view.change_operation(3)
+		self.__areaSel = False
 	
 	def on_select(self, widget, data=None): #Accede a Seleccion
 		self.__view.change_operation(4)
+		self.__areaSel = False
 
 	def on_to_pdf(self, widget, data=None):
 		self.__view.show_window_export()
@@ -90,9 +95,12 @@ class Controller:
 
 		if self.__view.get_draw_status() == 4:
 			if data.button == 1:
+				if self.__areaSel == False:
+					self.__view.set_data()
 				self.__view.select_area(data)
 			if data.button == 3:
 				self.__view.reset()
+				self.__areaSel = False
 
 		if data.button == 3:
 			if self.__view.get_draw_over(data) == 1:
@@ -111,7 +119,10 @@ class Controller:
 		if self.__view.get_draw_status() == 3:
 			return True
 		if self.__view.get_draw_status() == 4:
-			self.__view.move_selected(data)
+			if self.__areaSel == True:
+				self.__view.move_selected(data)
+			else:
+				self.__view.set_data()
 
 	def option_released(self, data = None):
 		if self.__view.get_draw_status() == 1:
@@ -122,9 +133,9 @@ class Controller:
 			return True
 		if self.__view.get_draw_status() == 4:
 			if data.button == 1:
-				if self.__view.get_draw_ind() == 0:
+				if self.__view.get_draw_ind() == 2:
 					self.__redo_stack.push(copy.deepcopy(self.__view.get_draw_graph()))
-					self.__view.select_area_end(data)
+					self.__areaSel = self.__view.select_area_end()
 
 	def show_label(self, widget, data = None):
 		self.__view.show_label()

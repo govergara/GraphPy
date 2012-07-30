@@ -9,7 +9,6 @@ except:
 		print "GTK NO DISPONIBLE EN TU SISTEMA"
 		exit(1)
 
-from multiprocessing import Process
 from Tkinter import *
 import squishy
 import palette
@@ -34,6 +33,8 @@ class Ui:
 		self.__menuTamanio = self.__loader.get_object("tamanio")
 		self.__menuFormaNodo = self.__loader.get_object("forma-nodo")
 		self.__menuFormaArista = self.__loader.get_object("forma-arista")
+		self.__menuMatriz = self.__loader.get_object("matriz")
+		self.__menuAlert = self.__loader.get_object("algoritmos")
 		self.__draw = squishy.Squishy(self.__darea)
 
 		
@@ -96,9 +97,6 @@ class Ui:
 	def get_draw_ind(self):
 		return self.__draw.get_ind()
 
-	def select_area_end(self,data):
-		self.__draw.select_area_end(data)
-
 	def get_draw_graph(self):
 		return self.__draw.get_graph()
 
@@ -108,8 +106,9 @@ class Ui:
 	def select_area(self,data):
 		self.__draw.select_area(data)
 
-	def select_area_end(self,data):
-		self.__draw.select_area_end(data)
+	def select_area_end(self):
+		self.__draw.select_area_end()
+		return True
 
 	def move_selected(self,data):
 		self.__draw.move_selected(data)
@@ -228,5 +227,51 @@ class Ui:
  		if op == 1:
  			for i in papelera:
  				self.__draw.paste_node((i.get_position()[0], i.get_position()[1]+25), i.get_label(), i.get_color(), i.get_tam(), i.get_form())
- 
 
+ 	def show_matriz(self, datos):
+ 		self.__matraz = self.__loader.get_object("matraz")
+ 		self.__menuMatriz.show()
+
+ 	def hide_matriz(self):
+ 		self.__menuMatriz.hide()
+
+ 	def show_algoritmo(self, string, option):
+ 		if option == 1:
+ 			self.__loader.get_object("titulo_algoritmo").set_text("Grafo Dirigido")
+ 			self.__loader.get_object("resultado").set_text(string)
+ 			self.__menuAlert.show()
+ 		if option == 2:
+ 			self.__loader.get_object("titulo_algoritmo").set_text("Tabla de Grados")
+ 			self.__loader.get_object("resultado").set_text(string)
+ 			self.__menuAlert.show()
+ 		if option == 3:
+ 			self.__loader.get_object("titulo_algoritmo").set_text("Completitud")
+ 			self.__loader.get_object("resultado").set_text(string)
+ 			self.__menuAlert.show()
+ 		if option == 4:
+ 			self.__loader.get_object("titulo_algoritmo").set_text("Bipartito")
+ 			self.__loader.get_object("resultado").set_text(string)
+ 			self.__menuAlert.show()
+ 		if option == 5:
+ 			self.__loader.get_object("titulo_algoritmo").set_text("Conexos")
+ 			self.__loader.get_object("resultado").set_text(string)
+ 			self.__menuAlert.show()
+ 		if option == 6:
+ 			self.__loader.get_object("titulo_algoritmo").set_text("Ciclos Eulerianos")
+ 			self.__loader.get_object("resultado").set_text(string)
+ 			self.__menuAlert.show()
+ 		if option == 7:
+ 			self.__loader.get_object("titulo_algoritmo").set_text("Caminos Hamiltonianos")
+ 			self.__loader.get_object("resultado").set_text(string)
+ 			self.__menuAlert.show()
+ 		if option == 8:
+ 			self.__loader.get_object("titulo_algoritmo").set_text("Dijkstra")
+ 			self.__loader.get_object("resultado").set_text(string)
+ 			self.__menuAlert.show()
+ 		if option == 9:
+ 			self.__loader.get_object("titulo_algoritmo").set_text("Kruskal")
+ 			self.__loader.get_object("resultado").set_text(string)
+ 			self.__menuAlert.show()
+ 
+ 	def set_data(self):
+ 		self.__draw.set_data()

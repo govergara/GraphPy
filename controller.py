@@ -1,7 +1,7 @@
 import StackActions
 from view import ui
 import copy
-#import model
+from model import graph
 
 class Controller:
 	def __init__(self):

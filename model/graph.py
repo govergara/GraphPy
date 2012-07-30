@@ -7,7 +7,6 @@ class Graph:
 	
 	def __init__(self, nodes):
 		self.__matrix = Matrix(nodes)
-		self.__nodes = nodes
 	
 	#
 	#  PRIVATE METHODS
@@ -17,7 +16,7 @@ class Graph:
 		"""Para un nodo 'target':
 		Determina si el nodo es valido (existe)
 		Retorna 'True' si existe, 'False' si no existe"""
-		dim = self.__matrix.get_dim()
+		dim = self.get_nodes()
 		if target >= 0 and target < dim:
 			return True
 		return False
@@ -159,7 +158,7 @@ class Graph:
 		Determina un recorrido para todos los nodos, sin repetirlos
 		Retorna el camino encontrado, 'None' si no encuentra uno"""
 		matrix = self.get_matrix()
-		dim = self.__matrix.get_dim()
+		dim = self.get_nodes()
 		stack.append(actual)
 		if len(stack) == dim:
 			temp = copy(stack)
@@ -174,7 +173,7 @@ class Graph:
 		"""Retorna todas las aristas existentes en el grafo"""
 		counter = 0
 		matrix = self.__matrix.get_matrix()
-		dim = self.__matrix.get_dim()
+		dim = self.get_nodes()
 		for i in range(dim):
 			for j in range(dim):
 				if matrix[i][j] != 0:
@@ -183,7 +182,7 @@ class Graph:
 
 	def __fleury(self, matrix, actual, array, path, edges, directed):
 		"""Guarda en la variable 'array' todos los caminos eulerianos posibles"""
-		dim = self.__matrix.get_dim()
+		dim = self.get_nodes()
 		path.append(actual)
 		if len(path) == (edges + 1):
 			array.append(copy(path))
@@ -207,7 +206,7 @@ class Graph:
 		Incluye orden inverso y camino circular"""
 		# revisa si array tiene caminos repetidos
 		# el codigo se ve feo, supongo que se puede mejorar
-		dim = self.__matrix.get_dim()
+		dim = self.get_nodes()
 		for path in range( len(array) ):
 			comparePath = path + 1
 			while comparePath < len(array):
@@ -307,6 +306,10 @@ class Graph:
 				return True
 		return False
 	
+	def get_nodes(self):
+		"""Retorna la cantidad de nodos del grafo"""
+		return self.__matrix.get_dim()
+	
 	def get_matrix(self):
 		"""Retorna una copia de la Matriz de Incidencia/Adyacencia"""
 		return self.__matrix.get_matrix()
@@ -316,7 +319,7 @@ class Graph:
 		if self.directed():
 			return None
 		matrix = self.get_matrix()
-		dim = self.__matrix.get_dim()
+		dim = self.get_nodes()
 		complementary = []
 		for i in range(dim):
 			complementary.append([])
@@ -332,7 +335,7 @@ class Graph:
 	
 	def get_complete(self):
 		"""Retorna la Matriz del grafo completo"""
-		dim = self.__matrix.get_dim()
+		dim = self.get_nodes()
 		complete = []
 		for i in range(dim):
 			complete.append([])
@@ -376,7 +379,7 @@ class Graph:
 		"""Determina si el grafo es ponderado o no
 		Retorna 'True' si es ponderado, 'False' si no lo es"""
 		matrix = self.get_matrix()
-		dim = self.__matrix.get_dim()
+		dim = self.get_nodes()
 		for i in range(dim):
 			for j in range(dim):
 				if matrix[i][j] != 0 and matrix[i][j] != 1:
@@ -386,7 +389,7 @@ class Graph:
 	def complete(self):
 		"""Determina si el grafo es completo o no
 		Retorna 'True' si es completa, 'False' si no lo es"""
-		cantNodos = self.__nodes
+		cantNodos = self.get_nodes()
 		for i in range(cantNodos):
 			if self.degree(i) != (cantNodos - 1):
 				return False
@@ -398,7 +401,7 @@ class Graph:
 		color1 = 1
 		color2 = 2
 		matrix = self.get_matrix()
-		dim = self.__matrix.get_dim()
+		dim = self.get_nodes()
 		colored = []
 		for i in range(dim):
 			colored.append(0)
@@ -435,7 +438,7 @@ class Graph:
 			return None
 		if not self.weighted():
 			return None
-		dim = self.__matrix.get_dim()
+		dim = self.get_nodes()
 		matrix = self.get_matrix()
 		roads = self.__breadthfirst_search(matrix, origin)
 		paths = []
@@ -457,7 +460,7 @@ class Graph:
 	def hamiltonian_paths(self):
 		"""Determina un camino que recorre todos los nodos
 		Retorna el camino"""
-		dim = self.__matrix.get_dim()
+		dim = self.get_nodes()
 		if not self.connected():
 			return None
 		temp = []
@@ -472,7 +475,7 @@ class Graph:
 	def eulerian_paths(self):
 		"""Determina un camino/ciclo euleriano, en caso de que exista
 		Retorna 'None' si no existe. Retorna el resultado de __fleury en otro caso"""
-		dim = self.__matrix.get_dim()
+		dim = self.get_nodes()
 		if not self.connected():
 			return None
 		

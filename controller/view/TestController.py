@@ -1,19 +1,19 @@
-from ui import *
+import ui
+import threading
+
+
+
 
 class Controller:
 	def __init__(self):
-		self.__view = Ui()
+		self.__view = ui.Ui()
 		self.__view.connect_signals(self)
 	
 	def throw_app(self):
 		self.__view.throw_ui()
-	
+		
 	def on_close(self,widget,data=None):
 		self.__view.stop_ui()
-<<<<<<< HEAD
-	
-=======
-<<<<<<< HEAD
 	
 	def on_cursor(self, widget,data=None): #Accede al Cursor
 		self.__view.change_operation(2)
@@ -62,30 +62,7 @@ class Controller:
 			self.__view.insert_edge(data)
 
 		if self.__view.get_draw_status() == 4:
-=======
-		
->>>>>>> gonzalo/master
-	def on_change_operation(self, widget,data=None):
-		self.__view.change_operation(2)
-	
-	def on_node(self,widget,data=None):
-		self.__view.change_operation(1)
-	
-	def on_add_edge(self, widget, data=None):
-		self.__view.change_operation(3)
-	
-	def on_to_pdf(self, widget, data=None):
-		self.__view.show_window_export()
-	
-	def on_export_clicked(self, widget, data=None):
-		self.__view.to_pdf()
-	
-	def on_destroyloader(self, widget, data=None):
-		self.__view.destroy_export()
->>>>>>> upstream/master
 
-<<<<<<< HEAD
-=======
 			if data.button == 1:
 				self.__view.select_area(data)
 			if data.button == 3:
@@ -114,6 +91,6 @@ class Controller:
 
 
 
->>>>>>> gonzalo/master
 a = Controller()
 a.throw_app()
+		

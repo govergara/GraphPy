@@ -50,25 +50,26 @@ class Matrix:
 				new.append(0)
 			self.__matrix.append(new)
 			self.__dimMatrix += 1
+			dim = self.get_dim()
 			for i in range(dim):
 				self.__matrix[i].append(0)
+			return True
 		except:
 			return False
-		return True
 	
 	def del_entry(self, target):
 		"""Para un indice "target":
 		Elimina los datos de un nodo (fila & columna respectiva)
 		Retorna 'True' si se ejecuta correctamente, 'False' en otro caso"""
 		try:
-			dim = self.get_dim()
 			self.__matrix.pop(target)
 			self.__dimMatrix -= 1
+			dim = self.get_dim()
 			for i in range(dim):
 				self.__matrix[i].pop(target)
+			return True
 		except:
 			return False
-		return True
 	
 	def set_entry(self, row, col, value):
 		"""Inserta un valor en el elemento (row, col) de la matriz"""

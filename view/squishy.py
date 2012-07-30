@@ -4,6 +4,7 @@ import time
 import cairo
 from gi.repository import Gtk,Gdk
 import copy
+from PIL import Image
 
 class Node:
 
@@ -121,6 +122,22 @@ class Edge:
 		self.__color = (0,0,0)
 		self.__tam = 2
 		self.__form = 1
+		self.__directed= True
+
+	def set_dirigido(self, newDirected):
+		"""Determina si la Arista es Dirigida"""
+		try:
+			self.__directed = newDirected
+			return True
+		except:
+			return False
+
+	def get_directed(self):
+		"""Obtiene si determinada Arista tiene direccion"""
+		try:
+			return self.__directed
+		except:
+			return None
 	
 	def set_form(self, newForm):
 		"""Asigna una nueva Forma a la Arista"""
@@ -298,29 +315,37 @@ class Squishy:
 		self.__drawArea.add_events(Gdk.EventMask.BUTTON1_MOTION_MASK)
 		self.__drawArea.add_events(Gdk.EventMask.BUTTON_RELEASE_MASK)
 	
-	def __draw(self, pdf = False, png = False, jpg = False):
+	def __draw(self, pdf = False, png = False, jpg = False, gif = False, printer = False):
 		"""Dibuja en Pantalla o en Archivo el Grafo que se esta Creando"""
-		if pdf is False and png is False and jpg is False:
+		if pdf is False and png is False and jpg is False and gif is False:
 			self.__sf=cairo.ImageSurface(cairo.FORMAT_ARGB32,740,500)
 		else:
 			self.__drawArea.queue_draw()
 			if pdf is True:
 				self.__sf = cairo.PDFSurface(self.__folder + self.__format,740,500)	
 			if png is True:
-				self.__sf = cairo.ImageSurface(cairo.FORMAT_ARGB32, 740, 500)
+				self.__sf.write_to_png(self.__folder + self.__format)
 			if jpg is True:
-				pass
-		self.__cntx = cairo.Context(self.__sf)
+				self.__sf.write_to_png("tmp.png")
+				Image.open("tmp.png").convert("RGB").save(self.__folder + self.__format)
+			if gif is True:
+				self.__sf.write_to_png("tmp.png")
+				Image.open("tmp.png").convert("RGB").save(self.__folder + self.__format)
+		if printer == False:
+			self.__cntx = cairo.Context(self.__sf)
+		self.__cntx.set_source_rgb(1,1,1)
+		self.__cntx.rectangle(0,0, 740, 500)
+		self.__cntx.fill()
 		if self.__malla == True :
 			self.__cntx.set_source_surface(cairo.ImageSurface.create_from_png("view/cuadricula.png"))
 			self.__cntx.paint()
-		print self.__graph.get_edges()
 		for i in self.__graph.get_edges():
 			self.__cntx.set_source_rgb(i.get_color()[0], i.get_color()[1], i.get_color()[2])
 			tmpx1 = self.__graph.get_node(i.get_connection()[0]).get_position()[0]
 			tmpy1 = self.__graph.get_node(i.get_connection()[0]).get_position()[1]
 			tmpx2 = self.__graph.get_node(i.get_connection()[1]).get_position()[0]
 			tmpy2 = self.__graph.get_node(i.get_connection()[1]).get_position()[1]
+
 			self.__cntx.move_to(tmpx1,tmpy1)
 			self.__cntx.set_line_width(i.get_tam())
 			if i.get_form() == 1:
@@ -334,8 +359,23 @@ class Squishy:
 			if i.get_form() == 4: 
 				self.__cntx.set_dash([i.get_tam(),i.get_tam()], 2);
 				self.__cntx.line_to(tmpx2,tmpy2)	
-
-			self.__cntx.move_to(((tmpx1+tmpx2)/2)+i.get_tam(),((tmpy1+tmpy2)/2)+i.get_tam())
+			if i.get_directed() == True:
+				#self.__cntx.move_to((tmpx1+tmpx2)/2, (tmpy1+tmpy2)/2)
+				arrow_len = i.get_tam()+30
+				angle = math.atan2(tmpy2 - tmpy1, tmpx2 - tmpx1) + math.pi
+				x1 = tmpx2 + arrow_len * math.cos(angle - 75)
+				y1 = tmpy2 + arrow_len * math.sin(angle - 75)
+				x2 = tmpx2 + arrow_len * math.cos(angle + 75)
+				y2 = tmpy2 + arrow_len * math.sin(angle + 75)
+				self.__cntx.move_to(tmpx2,tmpy2)
+				self.__cntx.line_to(x1,y1)
+				self.__cntx.stroke()
+				self.__cntx.move_to(tmpx2,tmpy2)
+				self.__cntx.line_to(x2,y2)
+				self.__cntx.stroke()
+				self.__cntx.move_to((x2+x1)/2, (y2+y1)/2)
+			else:
+				self.__cntx.move_to(((tmpx1+tmpx2)/2)+i.get_tam()+10,((tmpy1+tmpy2)/2)+i.get_tam()+10)
 			self.__cntx.show_text(str(i.get_label()))
 			self.__cntx.stroke()
 		for i in self.__graph.get_nodes():
@@ -358,6 +398,13 @@ class Squishy:
 		return self.__sf
 		
 		
+	def get_context(self):
+		"""Obtiene el Area de Dibujo"""
+		try:
+			return cairo.Context(self.__sf)
+		except:
+			return None
+
 	def get_graph(self):
 		"""Obtiene una Copia del Grafo"""
 		try:
@@ -502,10 +549,8 @@ class Squishy:
 
 	def __over_select(self):
 		"""Agrega a una Lista todos los nodos que estan sobre un Area Seleccionada"""
-		print self.__frameInicio, self.__frameFinal
 		for i in self.__graph.get_nodes():
 			pos = i.get_position()
-			print "--",pos
 			if(pos[0] >= self.__frameInicio[0] and pos[0] <= self.__frameFinal[0]):
 				if(pos[1] >= self.__frameInicio[1] and pos[1] <= self.__frameFinal[1]):
 					self.__temp.insert(len(self.__temp), i)
@@ -571,11 +616,14 @@ class Squishy:
 		self.__folder = direction
 		self.__format = format
 		if(format == '.pdf'):
-			self.__draw(True, False, False)
+			self.__draw(True, False, False, False)
 		if(format == '.png'):
-			self.__draw(False, True, False)
+			self.__draw(False, True, False, False)
 		if(format == '.jpg'):
-			self.__draw(False, False, True)
+			self.__draw(False, False, True, False)
+		if(format == '.gif'):
+			self.__draw(False, False, False, True)
+
 
 	def get_over(self, data=None):
 		"""Funcion que devuelve un valor al senialar en que posicion se encuentra el Mouse
@@ -605,8 +653,8 @@ class Squishy:
 		self.__frameFinal = self.__drawArea.get_pointer()
 		self.__drawArea.queue_draw()
 
-
-	
-
-		
+	def draw_extern(self, surface):
+		self.__cntx = surface
+		self.__draw(False, False, False, False, True)
+		return self.__cntx
 

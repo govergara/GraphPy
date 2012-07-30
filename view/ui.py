@@ -23,7 +23,6 @@ class Ui:
 		self.__darea = self.__loader.get_object("workstation")
 		self.__exportWindow = self.__loader.get_object("export")
 		self.__statusBar = self.__loader.get_object("statusbar1")
-		self.__printWindow = self.__loader.get_object("printdial")
 		self.__menuGrafo = self.__loader.get_object("menu-grafo")
 		self.__menuNodo = self.__loader.get_object("menu-nodo")
 		self.__menuArista = self.__loader.get_object("menu-arista")
@@ -35,9 +34,10 @@ class Ui:
 		self.__menuFormaArista = self.__loader.get_object("forma-arista")
 		self.__menuMatriz = self.__loader.get_object("matriz")
 		self.__menuAlert = self.__loader.get_object("algoritmos")
+		self.__printWindow = self.__loader.get_object("printdialog")
+		self.__pageSetup = self.__loader.get_object("pagesetupdialog")
 		self.__draw = squishy.Squishy(self.__darea)
-
-		
+	
 	def connect_signals(self,controller):
 		self.__loader.connect_signals(controller)
 
@@ -56,7 +56,16 @@ class Ui:
 		self.__exportWindow.show()
 
 	def show_print(self):
-		self.__printWindow.show()
+		self.__printWindow = Gtk.PrintOperation()
+		self.__printWindow.set_n_pages(1)
+		self.__printWindow.connect("draw_page", self.__printArea)
+		res = self.__printWindow.run(Gtk.PrintOperationAction.PRINT_DIALOG, self.__mainWindow)
+		return
+
+	def __printArea(self, operation=None, context=None, page_nr=None):
+		contexted = context.get_cairo_context()
+		self.__cairo_context = self.__draw.draw_extern(contexted)
+		return
 
 	def to_pdf(self):
 		self.__direction = self.__loader.get_object("export").get_filename()
@@ -64,7 +73,7 @@ class Ui:
 		print self.__direction + self.__formatExport
 		#print self.__direction
 		self.__draw.create_file(self.__direction, self.__formatExport)
-		self.destroy_export()
+		self.__exportWindow.hide()
 		
 	def stop_ui(self):
 		Gtk.main_quit()

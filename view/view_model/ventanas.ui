@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
-  <!-- interface-requires unixprint 0.0 -->
   <object class="GtkWindow" id="algoritmos">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Algortimos</property>
@@ -702,6 +701,15 @@
     <property name="tearoff_title">Menu Grafo</property>
     <property name="reserve_toggle_size">False</property>
     <child>
+      <object class="GtkMenuItem" id="define-tipo">
+        <property name="use_action_appearance">False</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Definir Tipo</property>
+        <property name="use_underline">True</property>
+      </object>
+    </child>
+    <child>
       <object class="GtkMenuItem" id="dirigido">
         <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
@@ -973,6 +981,11 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixbuf">print_icon.png</property>
+  </object>
+  <object class="GtkImage" id="save">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">_active_ Save.ico</property>
   </object>
   <object class="GtkWindow" id="principal">
     <property name="can_focus">False</property>
@@ -1517,35 +1530,6 @@
       </object>
     </child>
   </object>
-  <object class="GtkPrintUnixDialog" id="printdialog">
-    <property name="can_focus">False</property>
-    <property name="border_width">5</property>
-    <property name="type_hint">dialog</property>
-    <child internal-child="vbox">
-      <object class="GtkBox" id="printdialog-vbox1">
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox" id="printdialog-action_area1">
-            <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkImage" id="save">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixbuf">_active_ Save.ico</property>
-  </object>
   <object class="GtkFileChooserDialog" id="saveFile">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
@@ -1619,6 +1603,35 @@
       <action-widget response="0">savefile</action-widget>
       <action-widget response="0">close</action-widget>
     </action-widgets>
+  </object>
+  <object class="GtkWindow" id="show-nodes">
+    <property name="can_focus">False</property>
+    <property name="role">Nodos</property>
+    <child>
+      <object class="GtkBox" id="box19">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel" id="label8">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Lista de Nodos</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
   </object>
   <object class="GtkWindow" id="tamanio">
     <property name="can_focus">False</property>

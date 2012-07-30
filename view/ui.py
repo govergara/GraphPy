@@ -9,7 +9,6 @@ except:
 		print "GTK NO DISPONIBLE EN TU SISTEMA"
 		exit(1)
 
-from Tkinter import *
 import squishy
 import palette
 
@@ -70,7 +69,7 @@ class Ui:
 	def to_pdf(self):
 		self.__direction = self.__exportWindow.get_filename()
 		if self.__direction == None:
-			self.__exportWindow
+			self.__exportWindow.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
 		else:
 			self.__formatExport = self.__loader.get_object("formato").get_active_text()
 			print self.__direction + self.__formatExport

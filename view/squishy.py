@@ -1,6 +1,7 @@
-from math import pi
-from random import randint
-from cairo import *
+import math
+import random
+import time
+import cairo
 from gi.repository import Gtk,Gdk
 <<<<<<< HEAD
 import copy
@@ -9,11 +10,7 @@ import copy
 
 class Node:
 
-<<<<<<< HEAD
-	def __init__(self, id = -1, position = None, label = None):
-=======
 	def __init__(self, id=-1, position=None, label=None, color=None):
->>>>>>> gonzalo/master
 		self.__id = id
 		self.__label = label
 		self.__position = position
@@ -97,7 +94,6 @@ class Edge:
 	def __str__(self):
 		return  "ARISTA CONEXION : ({0:d},{1:d})\n ".format(self.__connection[0],self.__connection[1])
 
-
 class Graph:
 
 	def __init__(self):
@@ -153,9 +149,6 @@ class Graph:
 			if i.get_connection() == connection:
 				return True
 		return False
-<<<<<<< HEAD
-
-=======
 	
 <<<<<<< HEAD
 =======
@@ -164,7 +157,6 @@ class Graph:
 	
 	
 >>>>>>> upstream/master
->>>>>>> gonzalo/master
 
 class Squishy:
 
@@ -218,20 +210,20 @@ class Squishy:
 	
 	def __draw(self, pdf = False, png = False, jpg = False):
 		if pdf is False and png is False and jpg is False:
-			sf=ImageSurface(FORMAT_ARGB32,600,500)
+			sf=cairo.ImageSurface(cairo.FORMAT_ARGB32,600,500)
 		else:
 			adress = self.__folder + self.__format
 			print adress
 			if pdf is True:
-				sf = PDFSurface(adress,600,500)	
+				sf = cairo.PDFSurface(adress,600,500)	
 		
-		cntx = Context(sf);
+		cntx = cairo.Context(sf);
 		nodes = self.__graph.get_nodes()
 		edges = self.__graph.get_edges()
 		cntx.set_source_rgb(0,0,0)
 		for i in nodes:
 			pos = i.get_position()
-			cntx.arc(pos[0],pos[1], 10, 0, 2*pi)
+			cntx.arc(pos[0],pos[1], 10, 0, 2*math.pi)
 			cntx.fill()
 		print edges
 		for i in edges:
@@ -241,13 +233,9 @@ class Squishy:
 			cntx.line_to(nod2.get_position()[0],nod2.get_position()[1])
 			cntx.stroke()
 		return sf
-<<<<<<< HEAD
-	
-=======
 >>>>>>> upstream/master
 		
 		
->>>>>>> gonzalo/master
 	def get_graph(self):
 		try:
 			return copy.deepcopy(self.__graph)
@@ -276,9 +264,6 @@ class Squishy:
 			return True
 		except:
 			return False
-<<<<<<< HEAD
-	
-=======
 <<<<<<< HEAD
 
 	def get_ind(self):
@@ -338,7 +323,6 @@ class Squishy:
 
 =======
 >>>>>>> upstream/master
->>>>>>> gonzalo/master
 	def __over_nodes(self,x ,y ):
 		limit = [(x-15,y+15),(x+15,y+15),(x-15,y-15),(x+15,y-15)]
 		for i in self.__graph.get_nodes():
@@ -348,9 +332,6 @@ class Squishy:
 					if pos[0] >= limit[2][0] and pos[1] >= limit[2][1]:
 						if pos[0] <= limit[3][0] and pos[1] >= limit[3][1]:
 								return i
-<<<<<<< HEAD
-	
-=======
 <<<<<<< HEAD
 		return False
 			
@@ -408,11 +389,10 @@ class Squishy:
 =======
 			
 			
->>>>>>> gonzalo/master
 	def __on_click(self, widget, data=None):
 		if data.button == 1:
 			if self.__status == 1:
-				self.__graph.new_node(randint(1,1000),"nuevo",(data.x,data.y))
+				self.__graph.new_node(random.randint(1,1000),"nuevo",(data.x,data.y))
 				self.__drawArea.queue_draw()
 		if data.button == 3:
 			if self.__tmpSelection == None:
@@ -427,6 +407,7 @@ class Squishy:
 						self.__graph.new_edge(0,connected)
 						self.__drawArea.queue_draw()
 					self.__tmpSelection = None
+			
 	
 	def __on_motion(self, widget, data=None):
 		if self.__status == 2:
@@ -434,10 +415,11 @@ class Squishy:
 			tmp = self.__over_nodes(data.x,data.y)
 			tmp.set_position((data.x,data.y))
 			self.__drawArea.queue_draw()
-	
+			
 	def _on_double_click(self, widget, data=None):
 		pass
-	
+
+    
 	def repaint(self, widget, event):
 		surf = self.__draw()
 		self.canvas = context = widget.get_window().cairo_create()
@@ -454,8 +436,6 @@ class Squishy:
 			self.__draw(False, True, False)
 		if(format == '.jpg'):
 			self.__draw(False, False, True)
-<<<<<<< HEAD
-=======
 <<<<<<< HEAD
 
 	def menu_contextual(self, data=None, option = False):
@@ -481,4 +461,3 @@ class Squishy:
 
 		
 
->>>>>>> gonzalo/master

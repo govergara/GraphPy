@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# Empty file
-#
-=======
 import StackActions
 from view import ui
 import copy
@@ -209,4 +205,3 @@ class Controller:
 
 a = Controller()
 a.throw_app()
->>>>>>> gonzalo/master

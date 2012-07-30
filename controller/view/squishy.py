@@ -303,13 +303,14 @@ class Squishy:
 		if pdf is False and png is False and jpg is False:
 			self.__sf=cairo.ImageSurface(cairo.FORMAT_ARGB32,740,500)
 		else:
+			self.__drawArea.queue_draw()
 			if pdf is True:
 				self.__sf = cairo.PDFSurface(self.__folder + self.__format,740,500)	
 			if png is True:
-				pass
+				self.__sf = cairo.ImageSurface(cairo.FORMAT_ARGB32, 740, 500)
 			if jpg is True:
 				pass
-		self.__cntx = cairo.Context(self.__sf);
+		self.__cntx = cairo.Context(self.__sf)
 		if self.__malla == True :
 			self.__cntx.set_source_surface(cairo.ImageSurface.create_from_png("view/cuadricula.png"))
 			self.__cntx.paint()
@@ -347,6 +348,13 @@ class Squishy:
 				self.__cntx.fill()
 			self.__cntx.move_to(i.get_position()[0]+i.get_tam(),i.get_position()[1]-i.get_tam())
 			self.__cntx.show_text(i.get_label())
+		if self.__ind == 2:
+			self.__cntx.set_source_rgba(0, 0, 255, 0.3)
+			self.__change_delta()
+			tmpx = self.__frameFinal[0] - self.__frameInicio[0]
+			tmpy = self.__frameFinal[1] - self.__frameInicio[1]
+			self.__cntx.rectangle(self.__frameInicio[0], self.__frameInicio[1], tmpx, tmpy)
+			self.__cntx.fill()
 		return self.__sf
 		
 		
@@ -441,15 +449,14 @@ class Squishy:
 		y ademas sirve para obtener el punto de inicio del delta de Movimiento"""
 		if self.__ind == 0:
 			self.__frameInicio = self.__drawArea.get_pointer()
+			self.__ind = 2
 		if self.__ind == 1:
 			self.__deltaI = self.__drawArea.get_pointer()
 
-	def select_area_end(self, data=None):
+	def select_area_end(self):
 		"""Funcion que setea el punto final del area de seleccion"""
-		self.__frameFinal = self.__drawArea.get_pointer()
-		print self.__frameFinal
 		self.__ind = 1
-		self.__change_delta()
+		self.__drawArea.queue_draw()
 
 	def reset(self):
 		"""Funcion que aplica un reset a variables que se utilizan de diferentes maneras
@@ -495,8 +502,10 @@ class Squishy:
 
 	def __over_select(self):
 		"""Agrega a una Lista todos los nodos que estan sobre un Area Seleccionada"""
+		print self.__frameInicio, self.__frameFinal
 		for i in self.__graph.get_nodes():
 			pos = i.get_position()
+			print "--",pos
 			if(pos[0] >= self.__frameInicio[0] and pos[0] <= self.__frameFinal[0]):
 				if(pos[1] >= self.__frameInicio[1] and pos[1] <= self.__frameFinal[1]):
 					self.__temp.insert(len(self.__temp), i)
@@ -591,6 +600,10 @@ class Squishy:
 			return self.__temp
 		except:
 			return None
+
+	def set_data(self):
+		self.__frameFinal = self.__drawArea.get_pointer()
+		self.__drawArea.queue_draw()
 
 
 	

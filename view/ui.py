@@ -68,12 +68,15 @@ class Ui:
 		return
 
 	def to_pdf(self):
-		self.__direction = self.__loader.get_object("export").get_filename()
-		self.__formatExport = self.__loader.get_object("formato").get_active_text()
-		print self.__direction + self.__formatExport
-		#print self.__direction
-		self.__draw.create_file(self.__direction, self.__formatExport)
-		self.__exportWindow.hide()
+		self.__direction = self.__exportWindow.get_filename()
+		if self.__direction == None:
+			self.__exportWindow
+		else:
+			self.__formatExport = self.__loader.get_object("formato").get_active_text()
+			print self.__direction + self.__formatExport
+			#print self.__direction
+			self.__draw.create_file(self.__direction, self.__formatExport)
+			self.__exportWindow.hide()
 		
 	def stop_ui(self):
 		Gtk.main_quit()
